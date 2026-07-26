@@ -45,8 +45,19 @@ button, a { -webkit-tap-highlight-color: transparent; }
   justify-content: space-between;
   gap: 28px;
 }
-.logo { font-size: 21px; font-weight: 900; letter-spacing: -.03em; }
-.logo span { color: var(--accent); }
+.logo {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.logo img {
+  display: block;
+  width: auto;
+  height: 52px;
+  object-fit: contain;
+}
+
 .site-nav { display: flex; gap: 8px; }
 .site-nav a {
   padding: 10px 13px;
