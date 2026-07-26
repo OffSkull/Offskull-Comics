@@ -54,7 +54,7 @@ button, a { -webkit-tap-highlight-color: transparent; }
 .logo img {
  display: block;
   width: auto;
-  height: 52px;
+  height: 60px;
   max-width: 190px;
   object-fit: contain;
 }
