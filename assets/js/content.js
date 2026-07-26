@@ -35,28 +35,28 @@ window.OFFSKULL_DATA = {
   "characters": [
     {
       "name": "Американец",
-      "image": "assets/images/characters/amerikanets-1785091318635.png",
+      "image": "assets/images/characters/char-1.svg",
       "age": "29 лет",
       "ability": "Невероятная уверенность и сила",
       "description": "Всегда заканчивает начатое, даже когда никто не понимает, что именно он начал."
     },
     {
       "name": "Крот",
-      "image": "assets/images/characters/krot-1785091328125.png",
       "age": "Неизвестно",
       "ability": "Подземные тоннели и чувство земли",
-      "description": "Может прорыть путь почти куда угодно. Иногда — не в ту сторону."
+      "description": "Может прорыть путь почти куда угодно. Иногда — не в ту сторону.",
+      "image": "assets/images/characters/krot-1785091420819.png"
     },
     {
       "name": "Виноград",
-      "image": "assets/images/characters/vinograd-1785091331974.png",
+      "image": "assets/images/characters/char-3.svg",
       "age": "24 года",
       "ability": "Управление лозами и взрывными ягодами",
       "description": "Превращает силу природы в оружие и никогда не забывает про витамины."
     },
     {
       "name": "Стапарь",
-      "image": "assets/images/characters/stapar-1785091335604.png",
+      "image": "assets/images/characters/char-4.svg",
       "age": "35 лет",
       "ability": "Кратковременное бессмертие",
       "description": "После особого напитка становится неуязвимым. Время действия ограничено."
