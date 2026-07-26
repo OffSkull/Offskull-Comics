@@ -1,47 +1,128 @@
 (() => {
   "use strict";
 
-  const SESSION_KEY = "offskull_admin_session_v2";
+  const SESSION_KEY = "offskull_admin_session_v3";
+  const LEGACY_KEYS = [
+    "offskull_admin_session_v2",
+    "offskull_admin_session_v3"
+  ];
+  const SESSION_LIFETIME_MS = 2 * 60 * 60 * 1000;
 
-  function getSession() {
+  function safeGet(storage, key) {
     try {
-      const raw = sessionStorage.getItem(SESSION_KEY);
-      if (!raw) return null;
-
-      const parsed = JSON.parse(raw);
-      if (!parsed.owner || !parsed.repo || !parsed.branch || !parsed.token) {
-        clearSession();
-        return null;
-      }
-
-      return parsed;
+      return storage.getItem(key);
     } catch (_) {
-      clearSession();
       return null;
     }
   }
 
+  function safeSet(storage, key, value) {
+    try {
+      storage.setItem(key, value);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function safeRemove(storage, key) {
+    try {
+      storage.removeItem(key);
+    } catch (_) {}
+  }
+
+  function normalizeSession(parsed) {
+    if (!parsed || typeof parsed !== "object") return null;
+
+    const session = {
+      owner: String(parsed.owner || "").trim(),
+      repo: String(parsed.repo || "").trim(),
+      branch: String(parsed.branch || "main").trim() || "main",
+      token: String(parsed.token || "").trim(),
+      createdAt: Number(parsed.createdAt || Date.now()),
+      expiresAt: Number(parsed.expiresAt || 0)
+    };
+
+    if (!session.owner || !session.repo || !session.token) return null;
+
+    if (!session.expiresAt) {
+      session.expiresAt = session.createdAt + SESSION_LIFETIME_MS;
+    }
+
+    if (Date.now() >= session.expiresAt) return null;
+    return session;
+  }
+
+  function parseStored(raw) {
+    if (!raw) return null;
+
+    try {
+      return normalizeSession(JSON.parse(raw));
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function getSession() {
+    let session = parseStored(safeGet(sessionStorage, SESSION_KEY));
+
+    if (!session) {
+      session = parseStored(safeGet(localStorage, SESSION_KEY));
+
+      if (session) {
+        safeSet(sessionStorage, SESSION_KEY, JSON.stringify(session));
+      }
+    }
+
+    if (!session) {
+      clearSession();
+      return null;
+    }
+
+    return session;
+  }
+
   function setSession(session) {
-    sessionStorage.setItem(SESSION_KEY, JSON.stringify({
-      owner: String(session.owner || "").trim(),
-      repo: String(session.repo || "").trim(),
-      branch: String(session.branch || "main").trim() || "main",
-      token: String(session.token || "").trim(),
-      createdAt: Date.now()
-    }));
+    const normalized = normalizeSession({
+      ...session,
+      createdAt: Date.now(),
+      expiresAt: Date.now() + SESSION_LIFETIME_MS
+    });
+
+    if (!normalized) {
+      throw new Error("Не удалось создать сеанс администратора.");
+    }
+
+    const serialized = JSON.stringify(normalized);
+    safeSet(sessionStorage, SESSION_KEY, serialized);
+    safeSet(localStorage, SESSION_KEY, serialized);
+
+    LEGACY_KEYS
+      .filter(key => key !== SESSION_KEY)
+      .forEach(key => {
+        safeRemove(sessionStorage, key);
+        safeRemove(localStorage, key);
+      });
   }
 
   function clearSession() {
-    sessionStorage.removeItem(SESSION_KEY);
+    for (const key of LEGACY_KEYS) {
+      safeRemove(sessionStorage, key);
+      safeRemove(localStorage, key);
+    }
   }
 
   function requireSession() {
     const session = getSession();
+
     if (!session) {
-      const returnTo = encodeURIComponent(location.pathname.split("/").pop() || "admin.html");
+      const returnTo = encodeURIComponent(
+        location.pathname.split("/").pop() || "admin.html"
+      );
       location.replace(`admin-login.html?return=${returnTo}`);
       return null;
     }
+
     return session;
   }
 
@@ -173,7 +254,9 @@
     if (byType[file.type]) return byType[file.type];
 
     const fromName = String(file.name || "").split(".").pop().toLowerCase();
-    return ["jpg", "jpeg", "png", "webp", "gif"].includes(fromName) ? fromName : "jpg";
+    return ["jpg", "jpeg", "png", "webp", "gif"].includes(fromName)
+      ? fromName
+      : "jpg";
   }
 
   function slugify(value) {
@@ -213,7 +296,9 @@
     const marker = "window.OFFSKULL_DATA =";
     const markerIndex = source.indexOf(marker);
 
-    if (markerIndex < 0) throw new Error("Не удалось распознать файл content.js.");
+    if (markerIndex < 0) {
+      throw new Error("Не удалось распознать файл content.js.");
+    }
 
     const jsonText = source
       .slice(markerIndex + marker.length)
@@ -225,6 +310,7 @@
 
   async function saveData(data, message = "Обновлены персонажи через сайт", session = getSession()) {
     const content = makeContentFile(data);
+
     return putGitHubFile(
       "assets/js/content.js",
       utf8ToBase64(content),
@@ -235,8 +321,12 @@
 
   async function uploadCharacterImage(file, characterName, session = getSession()) {
     if (!file) return null;
-    if (!file.type.startsWith("image/")) throw new Error("Выбранный файл не является изображением.");
-    if (file.size > 15 * 1024 * 1024) throw new Error("Размер изображения должен быть не больше 15 МБ.");
+    if (!file.type.startsWith("image/")) {
+      throw new Error("Выбранный файл не является изображением.");
+    }
+    if (file.size > 15 * 1024 * 1024) {
+      throw new Error("Размер изображения должен быть не больше 15 МБ.");
+    }
 
     const extension = extensionFor(file);
     const name = slugify(characterName) || "character";
@@ -255,7 +345,9 @@
   }
 
   function downloadText(filename, content) {
-    const blob = new Blob([content], { type: "text/javascript;charset=utf-8" });
+    const blob = new Blob([content], {
+      type: "text/javascript;charset=utf-8"
+    });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;

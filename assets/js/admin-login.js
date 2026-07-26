@@ -44,7 +44,7 @@
     try {
       await OffSkullAdmin.verifySession(session);
       OffSkullAdmin.setSession(session);
-      showStatus("success", "Вход выполнен. Открываем панель…");
+      showStatus("success", "Вход выполнен. Режим администратора сохранён на 2 часа.");
 
       const returnPage = new URLSearchParams(location.search).get("return");
       const safeReturn = ["admin.html", "characters.html"].includes(returnPage)
