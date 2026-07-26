@@ -20,7 +20,7 @@ body {
     radial-gradient(circle at 90% 5%, rgba(255,90,54,.11), transparent 24rem),
     var(--bg);
   font-family: Inter, Arial, sans-serif;
-  line-height: 1.55;
+  line-height: 40px;
 }
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
