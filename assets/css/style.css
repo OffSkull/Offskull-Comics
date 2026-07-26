@@ -52,12 +52,12 @@ button, a { -webkit-tap-highlight-color: transparent; }
 }
 
 .logo img {
-  display: block;
+ display: block;
   width: auto;
   height: 52px;
+  max-width: 190px;
   object-fit: contain;
 }
-
 .site-nav { display: flex; gap: 8px; }
 .site-nav a {
   padding: 10px 13px;
