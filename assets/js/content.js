@@ -45,7 +45,7 @@ window.OFFSKULL_DATA = {
       "age": "Неизвестно",
       "ability": "Подземные тоннели и чувство земли",
       "description": "Может прорыть путь почти куда угодно. Иногда — не в ту сторону.",
-      "image": "assets/images/characters/krot-1785091420819.png"
+      "image": "assets/images/characters/krot-1785091518827.png"
     },
     {
       "name": "Виноград",
