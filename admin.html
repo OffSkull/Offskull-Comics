@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Панель администратора — OffSkull Comics</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body class="admin-body">
+  <header class="admin-header">
+    <div class="container admin-header-inner">
+      <a class="logo" href="index.html">OFF<span>SKULL</span></a>
+      <a class="button button-secondary button-small" href="characters.html">Посмотреть сайт</a>
+    </div>
+  </header>
+
+  <main class="container admin-main">
+    <section class="admin-intro">
+      <p class="eyebrow">Панель управления</p>
+      <h1>Редактор персонажей</h1>
+      <p>
+        Добавляйте персонажей, меняйте имя, возраст, способности, описание и изображение.
+        После сохранения изменения отправляются прямо в ваш репозиторий GitHub.
+      </p>
+    </section>
+
+    <section class="admin-panel connection-panel">
+      <div class="admin-panel-heading">
+        <div>
+          <h2>1. Подключение к GitHub</h2>
+          <p>Токен используется только в этой вкладке и не записывается в файлы сайта.</p>
+        </div>
+        <span class="connection-indicator" id="connection-indicator">Не проверено</span>
+      </div>
+
+      <div class="admin-form-grid">
+        <label>
+          <span>Логин GitHub</span>
+          <input id="github-owner" type="text" autocomplete="username" placeholder="например: offskullcomics">
+        </label>
+
+        <label>
+          <span>Название репозитория</span>
+          <input id="github-repo" type="text" placeholder="offskull-comics">
+        </label>
+
+        <label>
+          <span>Ветка</span>
+          <input id="github-branch" type="text" value="main" placeholder="main">
+        </label>
+
+        <label>
+          <span>Fine-grained token</span>
+          <div class="password-row">
+            <input id="github-token" type="password" autocomplete="off" placeholder="github_pat_...">
+            <button id="toggle-token" class="icon-button" type="button" aria-label="Показать токен">👁</button>
+          </div>
+        </label>
+      </div>
+
+      <div class="admin-actions">
+        <button class="button button-secondary" id="check-access" type="button">Проверить доступ</button>
+        <button class="button button-secondary" id="download-backup" type="button">Скачать резервную копию</button>
+      </div>
+
+      <details class="token-help">
+        <summary>Как создать безопасный токен GitHub</summary>
+        <ol>
+          <li>В GitHub откройте аватар → <strong>Settings</strong>.</li>
+          <li>Откройте <strong>Developer settings</strong> → <strong>Personal access tokens</strong> → <strong>Fine-grained tokens</strong>.</li>
+          <li>Нажмите <strong>Generate new token</strong>.</li>
+          <li>В Repository access выберите только репозиторий сайта.</li>
+          <li>В Repository permissions установите <strong>Contents: Read and write</strong>.</li>
+          <li>Создайте токен, скопируйте его и вставьте выше.</li>
+        </ol>
+        <p class="warning-text">
+          Никому не отправляйте токен. Не добавляйте его в HTML, JavaScript, сообщения и скриншоты.
+        </p>
+      </details>
+    </section>
+
+    <section class="admin-panel">
+      <div class="admin-panel-heading">
+        <div>
+          <h2>2. Персонажи</h2>
+          <p>Заполните карточки и выберите изображения JPG, PNG или WEBP.</p>
+        </div>
+        <button class="button" id="add-character" type="button">+ Добавить персонажа</button>
+      </div>
+
+      <div class="admin-character-list" id="admin-character-list"></div>
+    </section>
+
+    <section class="admin-save-bar">
+      <div>
+        <strong>Готово к публикации?</strong>
+        <p>Сначала создаётся резервная копия, затем картинки и файл данных отправляются в GitHub.</p>
+      </div>
+      <button class="button admin-save-button" id="save-to-github" type="button">
+        Сохранить на сайт
+      </button>
+    </section>
+
+    <div class="admin-status" id="admin-status" role="status" aria-live="polite"></div>
+  </main>
+
+  <script src="assets/js/content.js"></script>
+  <script src="assets/js/admin.js"></script>
+</body>
+</html>
