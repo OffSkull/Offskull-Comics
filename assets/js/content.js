@@ -35,10 +35,10 @@ window.OFFSKULL_DATA = {
   "characters": [
     {
       "name": "Американец",
+      "image": "assets/images/characters/char-1.svg",
       "age": "29 лет",
       "ability": "Невероятная уверенность и сила",
-      "description": "Всегда заканчивает начатое, даже когда никто не понимает, что именно он начал.",
-      "image": "assets/images/characters/amerikanets-1785133690443.png"
+      "description": "Всегда заканчивает начатое, даже когда никто не понимает, что именно он начал."
     },
     {
       "name": "Крот",
@@ -49,10 +49,10 @@ window.OFFSKULL_DATA = {
     },
     {
       "name": "Виноград",
-      "image": "assets/images/characters/char-3.svg",
       "age": "24 года",
       "ability": "Управление лозами и взрывными ягодами",
-      "description": "Превращает силу природы в оружие и никогда не забывает про витамины."
+      "description": "Превращает силу природы в оружие и никогда не забывает про витамины.",
+      "image": "assets/images/characters/vinograd-1785133765219.png"
     },
     {
       "name": "Стапарь",
