@@ -282,3 +282,7 @@
   renderAuthor();
   mobileMenu();
 })();
+
+pages: [
+  "assets/images/comics/viking/issue-1/1.png",
+  "assets/images/comics/viking/issue-1/2.png",
