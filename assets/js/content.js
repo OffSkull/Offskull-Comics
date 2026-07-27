@@ -49,14 +49,14 @@ window.OFFSKULL_DATA = {
     },
     {
       "name": "Виноград",
-      "image": "assets/images/characters/char-3.svg",
+      "image": "assets/images/characters/vinograd-1785135463762.png",
       "age": "24 года",
       "ability": "Управление лозами и взрывными ягодами",
       "description": "Превращает силу природы в оружие и никогда не забывает про витамины."
     },
     {
       "name": "Стапарь",
-      "image": "assets/images/characters/char-4.svg",
+      "image": "assets/images/characters/stapar-1785135466520.png",
       "age": "35 лет",
       "ability": "Кратковременное бессмертие",
       "description": "После особого напитка становится неуязвимым. Время действия ограничено."
