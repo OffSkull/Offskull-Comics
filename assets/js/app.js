@@ -2,7 +2,7 @@
   const fallbackComic = {
     id: "viking",
     title: "Викинг",
-    cover: "assets/images/comics/viking/cover.svg",
+    cover: "assets/images/comics/viking/cover.jpg",
     description: "История сурового воина, которому предстоит пройти через битвы, древние тайны и опасные земли, чтобы защитить свой народ и узнать правду о собственном прошлом.",
     genre: "Фэнтези, приключения, боевик",
     age: "16+",
