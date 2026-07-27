@@ -319,3 +319,85 @@ h3 { font-size: 24px; line-height: 1.15; }
   .reader-controls .button { flex: 1; }
   .footer-inner { flex-direction: column; justify-content: center; text-align: center; padding: 25px 0; }
 }
+:root {
+  --bg: #060606;
+  --surface: #111111;
+  --surface-2: #1a1a1a;
+  --text: #ffffff;
+  --muted: #a5a5a5;
+  --accent: #df2424;
+  --accent-2: #ffae00;
+  --line: rgba(255, 255, 255, 0.12);
+  --radius: 12px;
+}
+
+body {
+  background:
+    radial-gradient(circle at top right, rgba(200, 0, 0, 0.18), transparent 32rem),
+    #060606;
+}
+
+.site-header {
+  background: linear-gradient(90deg, #070707, #170505);
+  border-bottom: 1px solid rgba(255, 40, 40, 0.24);
+}
+
+.header-inner {
+  min-height: 62px;
+}
+
+.site-nav a {
+  padding: 8px 11px;
+  font-size: 14px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.site-nav a:hover,
+.site-nav a.active {
+  color: white;
+  background: #d52424;
+}
+
+h1,
+h2,
+h3 {
+  font-family: Impact, Arial Black, Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+}
+
+.button {
+  border-radius: 7px;
+  text-transform: uppercase;
+  box-shadow: 0 0 20px rgba(220, 30, 30, 0.18);
+}
+
+.hero-card {
+  border-radius: 16px;
+  border: 2px solid #282828;
+}
+
+.comic-card,
+.character-card,
+.author-card {
+  border: 2px solid #242424;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #151515, #0b0b0b);
+  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.65);
+}
+
+.comic-card:hover,
+.character-card:hover {
+  border-color: var(--accent);
+}
+
+.comic-card img,
+.character-card img {
+  filter: contrast(1.05) saturate(1.08);
+}
+
+.site-footer {
+  background: #050505;
+  border-top: 1px solid rgba(255, 40, 40, 0.2);
+}
