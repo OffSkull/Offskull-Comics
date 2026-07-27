@@ -2,18 +2,49 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Читалка — OffSkull Comics</title>
-  <link rel="stylesheet" href="assets/css/style.css">
-</head>
-<body class="reader-body">
-  <div id="reader-page"></div>
 
-<script src="assets/js/content.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="assets/js/supabase-config.js?v=10"></script>
-<script src="assets/js/supabase-client.js?v=10"></script>
-<script src="assets/js/site-data.js?v=10"></script>
-<script src="assets/js/app.js?v=10"></script>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <meta name="color-scheme" content="dark">
+
+  <title>Читалка — OffSkull Comics</title>
+
+  <link
+    rel="stylesheet"
+    href="assets/css/style.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="assets/css/reader-vertical.css?v=1"
+  >
+</head>
+
+<body class="reader-body vertical-reader-body">
+
+  <div id="reader-page">
+    <div class="vertical-reader-loading">
+      Загружаем комикс…
+    </div>
+  </div>
+
+  <!-- Данные сайта -->
+  <script src="assets/js/content.js"></script>
+
+  <!-- Подключение Supabase -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+  ></script>
+
+  <script src="assets/js/supabase-config.js?v=10"></script>
+  <script src="assets/js/supabase-client.js?v=10"></script>
+  <script src="assets/js/site-data.js?v=10"></script>
+
+  <!-- Вертикальная читалка -->
+  <script src="assets/js/reader-vertical.js?v=1"></script>
+
 </body>
 </html>
