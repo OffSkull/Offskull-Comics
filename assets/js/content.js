@@ -38,7 +38,7 @@ window.OFFSKULL_DATA = {
       "age": "29 лет",
       "ability": "Невероятная уверенность и сила",
       "description": "Всегда заканчивает начатое, даже когда никто не понимает, что именно он начал.",
-      "image": "assets/images/characters/amerikanets-1785133619572.png"
+      "image": "assets/images/characters/amerikanets-1785133690443.png"
     },
     {
       "name": "Крот",
