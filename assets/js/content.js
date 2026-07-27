@@ -35,10 +35,10 @@ window.OFFSKULL_DATA = {
   "characters": [
     {
       "name": "Американец",
-      "image": "assets/images/characters/char-1.svg",
       "age": "29 лет",
       "ability": "Невероятная уверенность и сила",
-      "description": "Всегда заканчивает начатое, даже когда никто не понимает, что именно он начал."
+      "description": "Всегда заканчивает начатое, даже когда никто не понимает, что именно он начал.",
+      "image": "assets/images/characters/amerikanets-1785133619572.png"
     },
     {
       "name": "Крот",
