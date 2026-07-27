@@ -32,6 +32,30 @@ window.OFFSKULL_DATA = {
       ]
     }
   ],
+  
+  {
+  id: "viking",
+  title: "Викинг",
+  cover: "assets/images/comics/viking/cover.jpg",
+  description: "История сурового воина, которому предстоит пройти через битвы, древние тайны и опасные земли, чтобы защитить свой народ и узнать правду о собственном прошлом.",
+  genre: "Фэнтези, приключения, боевик",
+  age: "16+",
+  status: "Выходит",
+  featured: true,
+  issues: [
+    {
+      number: 1,
+      title: "Начало пути",
+      date: "27 июля 2026",
+      pages: [
+        "assets/images/comics/viking/issue-1/page-1.jpg",
+        "assets/images/comics/viking/issue-1/page-2.jpg",
+        "assets/images/comics/viking/issue-1/page-3.jpg",
+        "assets/images/comics/viking/issue-1/page-4.jpg"
+      ]
+    }
+  ],
+}
   "characters": [
     {
       "name": "Американец",
