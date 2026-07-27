@@ -1,110 +1,52 @@
-(function () {
-  const fallbackComic = {
-    id: "viking",
-    title: "Викинг",
-    cover: "assets/images/comics/viking/cover.jpg",
-    description: "История сурового воина, которому предстоит пройти через битвы, древние тайны и опасные земли, чтобы защитить свой народ и узнать правду о собственном прошлом.",
-    genre: "Фэнтези, приключения, боевик",
-    age: "16+",
-    status: "Выходит",
-    featured: true,
-    issues: [
-      {
-        number: 1,
-        title: "Начало пути",
-        date: "27 июля 2026",
-        pages: [
-          "assets/images/comics/viking/issue-1/page-1.svg",
-          "assets/images/comics/viking/issue-1/page-2.svg",
-          "assets/images/comics/viking/issue-1/page-3.svg",
-          "assets/images/comics/viking/issue-1/page-4.svg"
-        ]
-      }
-    ]
+(async function () {
+  "use strict";
+
+  const fallbackData = window.OFFSKULL_DATA || {
+    site: {
+      name: "OffSkull Comics",
+      heroTitle: "Мир авторских комиксов",
+      heroText: "",
+      authorName: "Автор",
+      authorText: ""
+    },
+    comics: [],
+    characters: []
   };
 
-  const fallbackSite = {
-    name: "OffSkull Comics",
-    slogan: "Истории, которые не боятся темноты",
-    heroTitle: "Мир авторских комиксов",
-    heroText: "Читайте новые выпуски, знакомьтесь с героями и следите за развитием вселенной OffSkull Comics.",
-    authorName: "Дмитрий Черепов",
-    authorText: "Автор и создатель проекта OffSkull Comics."
-  };
-
-  const fallbackCharacters = [
-    {
-      name: "Американец",
-      image: "assets/images/characters/char-1.svg",
-      age: "29 лет",
-      ability: "Невероятная уверенность и сила",
-      description: "Всегда заканчивает начатое, даже когда никто не понимает, что именно он начал."
-    },
-    {
-      name: "Крот",
-      image: "assets/images/characters/char-2.svg",
-      age: "Неизвестно",
-      ability: "Подземные тоннели и чувство земли",
-      description: "Может прорыть путь почти куда угодно. Иногда — не в ту сторону."
-    },
-    {
-      name: "Виноград",
-      image: "assets/images/characters/char-3.svg",
-      age: "24 года",
-      ability: "Управление лозами и взрывными ягодами",
-      description: "Превращает силу природы в оружие и никогда не забывает про витамины."
-    },
-    {
-      name: "Стапарь",
-      image: "assets/images/characters/char-4.svg",
-      age: "35 лет",
-      ability: "Кратковременное бессмертие",
-      description: "После особого напитка становится неуязвимым. Время действия ограничено."
-    }
-  ];
-
-  let data = window.OFFSKULL_DATA;
-
-  if (!data || typeof data !== "object") {
-    data = {
-      site: fallbackSite,
-      comics: [fallbackComic],
-      characters: fallbackCharacters
-    };
-    window.OFFSKULL_DATA = data;
-  }
-
-  if (!data.site || typeof data.site !== "object") {
-    data.site = fallbackSite;
-  }
-
-  if (!Array.isArray(data.characters)) {
-    data.characters = fallbackCharacters;
-  }
-
-  if (!Array.isArray(data.comics)) {
-    data.comics = [];
-  }
-
-  if (data.comics.length === 0) {
-    data.comics.push(fallbackComic);
-  }
+  const data = await window.OffSkullSiteData.load(fallbackData);
+  window.OFFSKULL_DATA = data;
 
   function qs(name) {
     return new URLSearchParams(location.search).get(name);
   }
 
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;");
+  }
+
+  function safeUrl(value, fallback = "assets/images/banner.svg") {
+    const url = String(value || "").trim();
+    if (!url) return fallback;
+    if (/^javascript:/i.test(url)) return fallback;
+    return escapeHtml(url);
+  }
+
   function comicById(id) {
+    if (!data.comics.length) return null;
     return data.comics.find(comic => comic.id === id) || data.comics[0];
   }
 
   function setSiteText() {
     document.querySelectorAll("[data-site-name]").forEach(element => {
-      element.textContent = data.site.name || fallbackSite.name;
+      element.textContent = data.site.name || "OffSkull Comics";
     });
 
     document.querySelectorAll("[data-author-name]").forEach(element => {
-      element.textContent = data.site.authorName || fallbackSite.authorName;
+      element.textContent = data.site.authorName || "Автор";
     });
 
     const year = document.querySelector("[data-year]");
@@ -115,27 +57,53 @@
     const heroTitle = document.querySelector("#hero-title");
     if (!heroTitle) return;
 
-    heroTitle.textContent = data.site.heroTitle || fallbackSite.heroTitle;
+    heroTitle.textContent = data.site.heroTitle || "Мир авторских комиксов";
 
     const heroText = document.querySelector("#hero-text");
-    if (heroText) {
-      heroText.textContent = data.site.heroText || fallbackSite.heroText;
-    }
+    if (heroText) heroText.textContent = data.site.heroText || "";
 
     const featured = document.querySelector("#featured-comics");
+    const readLink = document.querySelector("#hero-read-link");
+    const visibleComics = data.comics.filter(comic => comic.featured !== false);
+    const firstComic = visibleComics[0] || data.comics[0];
+
+    if (readLink) {
+      if (firstComic?.issues?.[0]?.pages?.length) {
+        readLink.href =
+          `reader.html?id=${encodeURIComponent(firstComic.id)}` +
+          `&issue=${encodeURIComponent(firstComic.issues[0].number || 1)}&page=1`;
+        readLink.hidden = false;
+      } else {
+        readLink.href = "comic.html";
+        readLink.textContent = "Смотреть комиксы";
+      }
+    }
+
     if (!featured) return;
 
-    featured.innerHTML = data.comics.map(comic => `
+    if (!visibleComics.length) {
+      featured.innerHTML = `
+        <div class="empty-state">
+          <strong>Комиксы скоро появятся</strong>
+          <p>Автор ещё не опубликовал первый выпуск.</p>
+        </div>
+      `;
+      return;
+    }
+
+    featured.innerHTML = visibleComics.map(comic => `
       <article class="comic-card">
-        <a class="cover-wrap" href="comic.html?id=${comic.id}">
-          <img src="${comic.cover}" alt="Обложка комикса ${comic.title}">
-          <span class="age-badge">${comic.age}</span>
+        <a class="cover-wrap" href="comic.html?id=${encodeURIComponent(comic.id)}">
+          <img src="${safeUrl(comic.cover)}" alt="Обложка комикса ${escapeHtml(comic.title)}">
+          <span class="age-badge">${escapeHtml(comic.age || "")}</span>
         </a>
         <div class="comic-card-body">
-          <p class="eyebrow">${comic.genre}</p>
-          <h3>${comic.title}</h3>
-          <p>${comic.description}</p>
-          <a class="text-link" href="comic.html?id=${comic.id}">Открыть комикс →</a>
+          <p class="eyebrow">${escapeHtml(comic.genre || "")}</p>
+          <h3>${escapeHtml(comic.title || "Без названия")}</h3>
+          <p>${escapeHtml(comic.description || "")}</p>
+          <a class="text-link" href="comic.html?id=${encodeURIComponent(comic.id)}">
+            Открыть комикс →
+          </a>
         </div>
       </article>
     `).join("");
@@ -146,22 +114,34 @@
     if (!container) return;
 
     const comic = comicById(qs("id"));
-    if (!comic) return;
 
-    document.title = `${comic.title} — ${data.site.name || fallbackSite.name}`;
+    if (!comic) {
+      container.innerHTML = `
+        <section class="section">
+          <div class="empty-state">
+            <strong>Комиксов пока нет</strong>
+            <p>Первый комикс ещё не опубликован.</p>
+          </div>
+        </section>
+      `;
+      return;
+    }
+
+    const issues = Array.isArray(comic.issues) ? comic.issues : [];
+    document.title = `${comic.title} — ${data.site.name || "OffSkull Comics"}`;
 
     container.innerHTML = `
       <section class="comic-hero section">
-        <img class="comic-main-cover" src="${comic.cover}" alt="Обложка ${comic.title}">
+        <img class="comic-main-cover" src="${safeUrl(comic.cover)}" alt="Обложка ${escapeHtml(comic.title)}">
         <div>
           <p class="eyebrow">Комикс</p>
-          <h1>${comic.title}</h1>
-          <p class="lead">${comic.description}</p>
+          <h1>${escapeHtml(comic.title)}</h1>
+          <p class="lead">${escapeHtml(comic.description || "")}</p>
           <div class="meta-grid">
-            <div><span>Жанр</span><strong>${comic.genre}</strong></div>
-            <div><span>Возраст</span><strong>${comic.age}</strong></div>
-            <div><span>Статус</span><strong>${comic.status}</strong></div>
-            <div><span>Выпусков</span><strong>${comic.issues.length}</strong></div>
+            <div><span>Жанр</span><strong>${escapeHtml(comic.genre || "Не указан")}</strong></div>
+            <div><span>Возраст</span><strong>${escapeHtml(comic.age || "Не указан")}</strong></div>
+            <div><span>Статус</span><strong>${escapeHtml(comic.status || "Не указан")}</strong></div>
+            <div><span>Выпусков</span><strong>${issues.length}</strong></div>
           </div>
         </div>
       </section>
@@ -172,16 +152,27 @@
           <h2>Список выпусков</h2>
         </div>
         <div class="issues-list">
-          ${comic.issues.map(issue => `
-            <article class="issue-row">
-              <div class="issue-number">#${issue.number}</div>
-              <div>
-                <h3>${issue.title}</h3>
-                <p>${issue.pages.length} стр. · ${issue.date}</p>
-              </div>
-              <a class="button button-small" href="reader.html?id=${comic.id}&issue=${issue.number}&page=1">Читать</a>
-            </article>
-          `).join("")}
+          ${issues.length ? issues.map(issue => {
+            const pages = Array.isArray(issue.pages) ? issue.pages : [];
+            return `
+              <article class="issue-row">
+                <div class="issue-number">#${escapeHtml(issue.number || "")}</div>
+                <div>
+                  <h3>${escapeHtml(issue.title || `Выпуск ${issue.number || ""}`)}</h3>
+                  <p>${pages.length} стр. · ${escapeHtml(issue.date || "")}</p>
+                </div>
+                ${pages.length
+                  ? `<a class="button button-small" href="reader.html?id=${encodeURIComponent(comic.id)}&issue=${encodeURIComponent(issue.number || 1)}&page=1">Читать</a>`
+                  : `<span>Страницы скоро появятся</span>`
+                }
+              </article>
+            `;
+          }).join("") : `
+            <div class="empty-state">
+              <strong>Выпусков пока нет</strong>
+              <p>Автор ещё не загрузил страницы этого комикса.</p>
+            </div>
+          `}
         </div>
       </section>
     `;
@@ -192,42 +183,74 @@
     if (!root) return;
 
     const comic = comicById(qs("id"));
-    if (!comic) return;
 
+    if (!comic) {
+      root.innerHTML = `
+        <div class="reader-toolbar">
+          <a class="reader-back" href="index.html">← На главную</a>
+        </div>
+        <main class="reader-stage">
+          <div class="empty-state"><strong>Комикс не найден</strong></div>
+        </main>
+      `;
+      return;
+    }
+
+    const issues = Array.isArray(comic.issues) ? comic.issues : [];
     const issueNumber = Number(qs("issue") || 1);
-    const issue = comic.issues.find(item => item.number === issueNumber) || comic.issues[0];
-    if (!issue) return;
+    const issue = issues.find(item => Number(item.number) === issueNumber) || issues[0];
+    const pages = Array.isArray(issue?.pages) ? issue.pages : [];
+
+    if (!issue || !pages.length) {
+      root.innerHTML = `
+        <div class="reader-toolbar">
+          <a class="reader-back" href="comic.html?id=${encodeURIComponent(comic.id)}">← К комиксу</a>
+          <div><strong>${escapeHtml(comic.title)}</strong></div>
+        </div>
+        <main class="reader-stage">
+          <div class="empty-state">
+            <strong>Страницы пока не загружены</strong>
+          </div>
+        </main>
+      `;
+      return;
+    }
 
     let page = Number(qs("page") || 1);
-    page = Math.min(Math.max(page, 1), issue.pages.length);
+    page = Math.min(Math.max(page, 1), pages.length);
 
-    const previousLink = page > 1
-      ? `reader.html?id=${comic.id}&issue=${issue.number}&page=${page - 1}`
-      : `comic.html?id=${comic.id}`;
+    document.title =
+      `${comic.title}: ${issue.title || `Выпуск ${issue.number}`} — страница ${page}`;
 
-    const nextLink = page < issue.pages.length
-      ? `reader.html?id=${comic.id}&issue=${issue.number}&page=${page + 1}`
-      : `comic.html?id=${comic.id}`;
+    const previous = page > 1
+      ? `reader.html?id=${encodeURIComponent(comic.id)}&issue=${encodeURIComponent(issue.number)}&page=${page - 1}`
+      : `comic.html?id=${encodeURIComponent(comic.id)}`;
+
+    const next = page < pages.length
+      ? `reader.html?id=${encodeURIComponent(comic.id)}&issue=${encodeURIComponent(issue.number)}&page=${page + 1}`
+      : `comic.html?id=${encodeURIComponent(comic.id)}`;
 
     root.innerHTML = `
       <div class="reader-toolbar">
-        <a class="reader-back" href="comic.html?id=${comic.id}">← К выпускам</a>
+        <a class="reader-back" href="comic.html?id=${encodeURIComponent(comic.id)}">← К выпускам</a>
         <div>
-          <strong>${comic.title}</strong>
-          <span>${issue.title} · ${page}/${issue.pages.length}</span>
+          <strong>${escapeHtml(comic.title)}</strong>
+          <span>${escapeHtml(issue.title || `Выпуск ${issue.number}`)} · ${page}/${pages.length}</span>
         </div>
       </div>
 
       <main class="reader-stage">
-        <a class="reader-arrow" href="${previousLink}">←</a>
-        <img class="reader-image" src="${issue.pages[page - 1]}" alt="${comic.title}, страница ${page}">
-        <a class="reader-arrow" href="${nextLink}">→</a>
+        <a class="reader-arrow" href="${previous}" aria-label="Предыдущая страница">←</a>
+        <img class="reader-image" src="${safeUrl(pages[page - 1])}" alt="${escapeHtml(comic.title)}, страница ${page}">
+        <a class="reader-arrow" href="${next}" aria-label="Следующая страница">→</a>
       </main>
 
       <div class="reader-controls">
-        <a class="button button-secondary" href="${previousLink}">← Назад</a>
-        <span>Страница ${page} из ${issue.pages.length}</span>
-        <a class="button" href="${nextLink}">${page < issue.pages.length ? "Далее →" : "Завершить"}</a>
+        <a class="button button-secondary" href="${previous}">← Назад</a>
+        <span>Страница ${page} из ${pages.length}</span>
+        <a class="button" href="${next}">
+          ${page < pages.length ? "Далее →" : "Завершить"}
+        </a>
       </div>
     `;
   }
@@ -236,16 +259,31 @@
     const grid = document.querySelector("#characters-grid");
     if (!grid) return;
 
+    if (!data.characters.length) {
+      grid.innerHTML = `
+        <div class="empty-state">
+          <strong>Персонажи скоро появятся</strong>
+        </div>
+      `;
+      return;
+    }
+
     grid.innerHTML = data.characters.map(character => `
       <article class="character-card">
-        <img src="${character.image}" alt="${character.name}">
+        <img src="${safeUrl(character.image)}" alt="${escapeHtml(character.name)}">
         <div class="character-info">
-          <h2>${character.name}</h2>
+          <h2>${escapeHtml(character.name)}</h2>
           <dl>
-            <div><dt>Возраст</dt><dd>${character.age}</dd></div>
-            <div><dt>Способности</dt><dd>${character.ability}</dd></div>
+            <div>
+              <dt>Возраст</dt>
+              <dd>${escapeHtml(character.age || "Неизвестно")}</dd>
+            </div>
+            <div>
+              <dt>Способности</dt>
+              <dd>${escapeHtml(character.ability || "Не указаны")}</dd>
+            </div>
           </dl>
-          <p>${character.description}</p>
+          <p>${escapeHtml(character.description || "")}</p>
         </div>
       </article>
     `).join("");
@@ -255,12 +293,10 @@
     const name = document.querySelector("#author-name");
     if (!name) return;
 
-    name.textContent = data.site.authorName || fallbackSite.authorName;
+    name.textContent = data.site.authorName || "Автор";
 
     const text = document.querySelector("#author-text");
-    if (text) {
-      text.textContent = data.site.authorText || fallbackSite.authorText;
-    }
+    if (text) text.textContent = data.site.authorText || "";
   }
 
   function mobileMenu() {
@@ -282,7 +318,3 @@
   renderAuthor();
   mobileMenu();
 })();
-
-pages: [
-  "assets/images/comics/viking/issue-1/1.png",
-  "assets/images/comics/viking/issue-1/2.png",

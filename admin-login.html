@@ -4,15 +4,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
-  <title>Вход для администратора — OffSkull Comics</title>
+  <title>Вход администратора — OffSkull Comics</title>
   <link rel="stylesheet" href="assets/css/style.css">
-  <link rel="stylesheet" href="assets/css/admin.css">
+  <link rel="stylesheet" href="assets/css/admin.css?v=10">
 </head>
 <body class="admin-body admin-login-body">
   <header class="admin-header">
     <div class="container admin-header-inner">
       <a class="logo" href="index.html">OFF<span>SKULL</span></a>
-      <a class="button button-secondary button-small" href="index.html">← Вернуться на сайт</a>
+      <a class="button button-secondary button-small" href="index.html">
+        ← Вернуться на сайт
+      </a>
     </div>
   </header>
 
@@ -20,60 +22,65 @@
     <section class="admin-login-card">
       <div class="admin-login-icon">🔐</div>
       <p class="eyebrow">Закрытая зона</p>
-      <h1>Вход для администратора</h1>
+      <h1>Вход администратора</h1>
       <p class="admin-login-description">
-        Войдите с помощью GitHub-токена, чтобы редактировать персонажей,
-        загружать изображения и сохранять изменения на сайте.
+        Введите логин и пароль администратора. Обычным читателям вход
+        не требуется — комиксы и персонажи открыты для просмотра.
       </p>
 
       <form id="admin-login-form" class="admin-login-form">
         <label>
-          <span>Логин GitHub</span>
-          <input id="login-owner" type="text" autocomplete="username" placeholder="например: offskullcomics" required>
+          <span>Логин</span>
+          <input
+            id="login-email"
+            type="email"
+            autocomplete="username"
+            placeholder="admin@offskull.ru"
+            required
+          >
         </label>
 
         <label>
-          <span>Название репозитория</span>
-          <input id="login-repo" type="text" placeholder="offskull-comics" required>
-        </label>
-
-        <label>
-          <span>Ветка</span>
-          <input id="login-branch" type="text" value="main" placeholder="main" required>
-        </label>
-
-        <label>
-          <span>Fine-grained token</span>
+          <span>Пароль</span>
           <div class="password-row">
-            <input id="login-token" type="password" autocomplete="off" placeholder="github_pat_..." required>
-            <button id="toggle-login-token" class="icon-button" type="button" aria-label="Показать токен">👁</button>
+            <input
+              id="login-password"
+              type="password"
+              autocomplete="current-password"
+              placeholder="Ваш пароль"
+              required
+            >
+            <button
+              id="toggle-login-password"
+              class="icon-button"
+              type="button"
+              aria-label="Показать пароль"
+            >👁</button>
           </div>
         </label>
 
-        <button class="button admin-login-button" type="submit">Войти в панель</button>
+        <button class="button admin-login-button" type="submit">
+          Войти
+        </button>
       </form>
 
-      <div class="admin-login-status" id="admin-login-status" role="status" aria-live="polite"></div>
-
-      <details class="token-help">
-        <summary>Где получить токен</summary>
-        <ol>
-          <li>GitHub → аватар → <strong>Settings</strong>.</li>
-          <li><strong>Developer settings</strong> → <strong>Personal access tokens</strong>.</li>
-          <li>Откройте <strong>Fine-grained tokens</strong> и создайте новый токен.</li>
-          <li>Разрешите доступ только к репозиторию сайта.</li>
-          <li>Включите разрешение <strong>Contents: Read and write</strong>.</li>
-        </ol>
-      </details>
+      <div
+        class="admin-login-status"
+        id="admin-login-status"
+        role="status"
+        aria-live="polite"
+      ></div>
 
       <p class="admin-security-note">
-        Токен хранится только в текущей вкладке браузера и удаляется после выхода
-        или закрытия вкладки.
+        Доступ к редактированию проверяется сервером Supabase.
+        Пароль не хранится в файлах сайта.
       </p>
     </section>
   </main>
 
-  <script src="assets/js/admin-core.js?v=3"></script>
-  <script src="assets/js/admin-login.js?v=3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-config.js?v=10"></script>
+  <script src="assets/js/supabase-client.js?v=10"></script>
+  <script src="assets/js/admin-login.js?v=10"></script>
 </body>
 </html>

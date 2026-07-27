@@ -1,79 +1,133 @@
-(() => {
+(async () => {
   "use strict";
 
   const form = document.querySelector("#admin-login-form");
-  const ownerInput = document.querySelector("#login-owner");
-  const repoInput = document.querySelector("#login-repo");
-  const branchInput = document.querySelector("#login-branch");
-  const tokenInput = document.querySelector("#login-token");
-  const status = document.querySelector("#admin-login-status");
+  const emailInput = document.querySelector("#login-email");
+  const passwordInput = document.querySelector("#login-password");
+  const statusBox = document.querySelector("#admin-login-status");
   const submitButton = form.querySelector('button[type="submit"]');
 
-  detectRepository();
+  removeLegacyGitHubSessions();
 
-  const currentSession = OffSkullAdmin.getSession();
-  if (currentSession) {
-    ownerInput.value = currentSession.owner;
-    repoInput.value = currentSession.repo;
-    branchInput.value = currentSession.branch;
+  document
+    .querySelector("#toggle-login-password")
+    .addEventListener("click", () => {
+      passwordInput.type =
+        passwordInput.type === "password" ? "text" : "password";
+    });
+
+  if (!window.OffSkullSupabase?.isConfigured()) {
+    showStatus(
+      "error",
+      "Supabase ещё не настроен. Заполните assets/js/supabase-config.js."
+    );
+    submitButton.disabled = true;
+    return;
   }
 
-  document.querySelector("#toggle-login-token").addEventListener("click", () => {
-    tokenInput.type = tokenInput.type === "password" ? "text" : "password";
-  });
+  const client = window.OffSkullSupabase.getClient();
+
+  try {
+    const { data } = await client.auth.getSession();
+
+    if (data?.session) {
+      const { data: isAdmin } = await client.rpc("is_site_admin");
+      if (isAdmin === true) {
+        location.replace("admin.html");
+        return;
+      }
+    }
+  } catch (_) {}
 
   form.addEventListener("submit", async event => {
     event.preventDefault();
 
-    const session = {
-      owner: ownerInput.value.trim(),
-      repo: repoInput.value.trim(),
-      branch: branchInput.value.trim() || "main",
-      token: tokenInput.value.trim()
-    };
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
 
-    if (!session.owner || !session.repo || !session.token) {
-      showStatus("error", "Заполните все обязательные поля.");
+    if (!email || !password) {
+      showStatus("error", "Введите логин и пароль.");
       return;
     }
 
-    submitButton.disabled = true;
-    submitButton.textContent = "Проверяем доступ…";
-    showStatus("busy", "Подключаемся к GitHub…");
+    setBusy(true);
+    showStatus("busy", "Проверяем данные…");
 
     try {
-      await OffSkullAdmin.verifySession(session);
-      OffSkullAdmin.setSession(session);
-      showStatus("success", "Вход выполнен. Режим администратора сохранён на 2 часа.");
+      const { error } = await client.auth.signInWithPassword({
+        email,
+        password
+      });
 
-      const returnPage = new URLSearchParams(location.search).get("return");
-      const safeReturn = ["admin.html", "characters.html"].includes(returnPage)
+      if (error) throw error;
+
+      const { data: isAdmin, error: adminError } =
+        await client.rpc("is_site_admin");
+
+      if (adminError) throw adminError;
+
+      if (isAdmin !== true) {
+        await client.auth.signOut();
+        throw new Error("У этого аккаунта нет прав администратора.");
+      }
+
+      showStatus("success", "Вход выполнен.");
+
+      const returnPage =
+        new URLSearchParams(location.search).get("return");
+
+      const safeReturn = ["admin.html"].includes(returnPage)
         ? returnPage
-        : "characters.html";
+        : "admin.html";
 
-      setTimeout(() => location.replace(safeReturn), 350);
+      setTimeout(() => location.replace(safeReturn), 250);
     } catch (error) {
-      OffSkullAdmin.clearSession();
-      showStatus("error", OffSkullAdmin.friendlyError(error));
-      submitButton.disabled = false;
-      submitButton.textContent = "Войти в панель";
+      showStatus(
+        "error",
+        friendlyLoginError(error)
+      );
+      setBusy(false);
     }
   });
 
-  function detectRepository() {
-    if (!location.hostname.endsWith(".github.io")) return;
-
-    const owner = location.hostname.split(".")[0];
-    const firstPath = location.pathname.split("/").filter(Boolean)[0];
-
-    ownerInput.value = owner;
-    repoInput.value = firstPath && !firstPath.endsWith(".html")
-      ? firstPath
-      : `${owner}.github.io`;
+  function setBusy(busy) {
+    emailInput.disabled = busy;
+    passwordInput.disabled = busy;
+    submitButton.disabled = busy;
+    submitButton.textContent = busy ? "Входим…" : "Войти";
   }
 
   function showStatus(type, message) {
-    status.className = `admin-login-status visible ${type}`;
-    status.textContent = message;
+    statusBox.className =
+      `admin-login-status visible ${type}`;
+    statusBox.textContent = message;
+  }
+
+  function friendlyLoginError(error) {
+    const message = String(error?.message || "");
+
+    if (/invalid login credentials/i.test(message)) {
+      return "Неверный логин или пароль.";
+    }
+
+    if (/email not confirmed/i.test(message)) {
+      return "Аккаунт администратора не подтверждён.";
+    }
+
+    return message || "Не удалось выполнить вход.";
+  }
+
+  function removeLegacyGitHubSessions() {
+    const keys = [
+      "offskull_admin_session_v2",
+      "offskull_admin_session_v3"
+    ];
+
+    for (const key of keys) {
+      try {
+        localStorage.removeItem(key);
+        sessionStorage.removeItem(key);
+      } catch (_) {}
+    }
   }
 })();

@@ -1,255 +1,107 @@
 (() => {
   "use strict";
 
-  const SESSION_KEY = "offskull_admin_session_v3";
-  const LEGACY_KEYS = [
-    "offskull_admin_session_v2",
-    "offskull_admin_session_v3"
-  ];
-  const SESSION_LIFETIME_MS = 2 * 60 * 60 * 1000;
   const MAX_IMAGE_SIZE = 20 * 1024 * 1024;
 
-  function safeGet(storage, key) {
-    try {
-      return storage.getItem(key);
-    } catch (_) {
-      return null;
-    }
-  }
-
-  function safeSet(storage, key, value) {
-    try {
-      storage.setItem(key, value);
-      return true;
-    } catch (_) {
-      return false;
-    }
-  }
-
-  function safeRemove(storage, key) {
-    try {
-      storage.removeItem(key);
-    } catch (_) {}
-  }
-
-  function normalizeSession(parsed) {
-    if (!parsed || typeof parsed !== "object") return null;
-
-    const session = {
-      owner: String(parsed.owner || "").trim(),
-      repo: String(parsed.repo || "").trim(),
-      branch: String(parsed.branch || "main").trim() || "main",
-      token: String(parsed.token || "").trim(),
-      createdAt: Number(parsed.createdAt || Date.now()),
-      expiresAt: Number(parsed.expiresAt || 0)
-    };
-
-    if (!session.owner || !session.repo || !session.token) return null;
-
-    if (!session.expiresAt) {
-      session.expiresAt = session.createdAt + SESSION_LIFETIME_MS;
-    }
-
-    if (Date.now() >= session.expiresAt) return null;
-    return session;
-  }
-
-  function parseStored(raw) {
-    if (!raw) return null;
-
-    try {
-      return normalizeSession(JSON.parse(raw));
-    } catch (_) {
-      return null;
-    }
-  }
-
-  function getSession() {
-    let session = parseStored(safeGet(sessionStorage, SESSION_KEY));
-
-    if (!session) {
-      session = parseStored(safeGet(localStorage, SESSION_KEY));
-      if (session) {
-        safeSet(sessionStorage, SESSION_KEY, JSON.stringify(session));
-      }
-    }
-
-    if (!session) {
-      clearSession();
-      return null;
-    }
-
-    return session;
-  }
-
-  function setSession(session) {
-    const normalized = normalizeSession({
-      ...session,
-      createdAt: Date.now(),
-      expiresAt: Date.now() + SESSION_LIFETIME_MS
-    });
-
-    if (!normalized) {
-      throw new Error("Не удалось создать сеанс администратора.");
-    }
-
-    const serialized = JSON.stringify(normalized);
-    safeSet(sessionStorage, SESSION_KEY, serialized);
-    safeSet(localStorage, SESSION_KEY, serialized);
-
-    LEGACY_KEYS
-      .filter(key => key !== SESSION_KEY)
-      .forEach(key => {
-        safeRemove(sessionStorage, key);
-        safeRemove(localStorage, key);
-      });
-  }
-
-  function clearSession() {
-    for (const key of LEGACY_KEYS) {
-      safeRemove(sessionStorage, key);
-      safeRemove(localStorage, key);
-    }
-  }
-
-  function requireSession() {
-    const session = getSession();
-
-    if (!session) {
-      const returnTo = encodeURIComponent(
-        location.pathname.split("/").pop() || "admin.html"
+  function getClient() {
+    if (!window.OffSkullSupabase?.isConfigured()) {
+      throw new Error(
+        "Supabase не настроен. Заполните assets/js/supabase-config.js."
       );
-      location.replace(`admin-login.html?return=${returnTo}`);
-      return null;
     }
 
-    return session;
+    return window.OffSkullSupabase.getClient();
   }
 
-  async function githubFetch(path, options = {}, session = getSession()) {
-    if (!session) throw new Error("Сеанс администратора не найден.");
+  async function getSession() {
+    const client = getClient();
+    const { data, error } = await client.auth.getSession();
 
-    return fetch(`https://api.github.com${path}`, {
-      ...options,
-      headers: {
-        "Accept": "application/vnd.github+json",
-        "Authorization": `Bearer ${session.token}`,
-        "X-GitHub-Api-Version": "2022-11-28",
-        "Content-Type": "application/json",
-        ...(options.headers || {})
-      }
-    });
+    if (error) throw error;
+    if (!data?.session) return null;
+
+    const { data: isAdmin, error: adminError } =
+      await client.rpc("is_site_admin");
+
+    if (adminError) throw adminError;
+    if (isAdmin !== true) return null;
+
+    return data.session;
   }
 
-  async function verifySession(session) {
-    const response = await githubFetch(
-      `/repos/${encodeURIComponent(session.owner)}/${encodeURIComponent(session.repo)}`,
-      { method: "GET" },
-      session
-    );
-
-    if (!response.ok) throw await apiError(response);
-    return response.json();
-  }
-
-  function encodePath(path) {
-    return String(path).split("/").map(encodeURIComponent).join("/");
-  }
-
-  async function getGitHubFile(path, allowMissing = false, session = getSession()) {
-    if (!session) throw new Error("Сначала войдите как администратор.");
-
-    const response = await githubFetch(
-      `/repos/${encodeURIComponent(session.owner)}/${encodeURIComponent(session.repo)}/contents/${encodePath(path)}?ref=${encodeURIComponent(session.branch)}`,
-      { method: "GET" },
-      session
-    );
-
-    if (allowMissing && response.status === 404) return null;
-    if (!response.ok) throw await apiError(response);
-    return response.json();
-  }
-
-  async function putGitHubFile(path, base64Content, message, session = getSession()) {
-    if (!session) throw new Error("Сначала войдите как администратор.");
-
-    const current = await getGitHubFile(path, true, session);
-    const body = {
-      message,
-      content: base64Content,
-      branch: session.branch
-    };
-
-    if (current?.sha) body.sha = current.sha;
-
-    const response = await githubFetch(
-      `/repos/${encodeURIComponent(session.owner)}/${encodeURIComponent(session.repo)}/contents/${encodePath(path)}`,
-      {
-        method: "PUT",
-        body: JSON.stringify(body)
-      },
-      session
-    );
-
-    if (!response.ok) throw await apiError(response);
-    return response.json();
-  }
-
-  async function apiError(response) {
-    let message = `GitHub вернул ошибку ${response.status}.`;
-
+  async function requireSession() {
     try {
-      const body = await response.json();
-      if (body.message) message += ` ${body.message}`;
-    } catch (_) {}
+      const session = await getSession();
 
-    const error = new Error(message);
-    error.status = response.status;
-    return error;
+      if (!session) {
+        redirectToLogin();
+        return null;
+      }
+
+      return session;
+    } catch (error) {
+      console.error(error);
+      redirectToLogin();
+      return null;
+    }
+  }
+
+  function redirectToLogin() {
+    const returnTo = encodeURIComponent(
+      location.pathname.split("/").pop() || "admin.html"
+    );
+    location.replace(`admin-login.html?return=${returnTo}`);
+  }
+
+  async function clearSession() {
+    try {
+      await getClient().auth.signOut();
+    } finally {
+      for (const key of [
+        "offskull_admin_session_v2",
+        "offskull_admin_session_v3"
+      ]) {
+        try {
+          localStorage.removeItem(key);
+          sessionStorage.removeItem(key);
+        } catch (_) {}
+      }
+    }
   }
 
   function friendlyError(error) {
-    if (error?.status === 401) return "Токен неверный, просрочен или был отозван.";
-    if (error?.status === 403) return "У токена нет разрешения Contents: Read and write.";
-    if (error?.status === 404) return "Репозиторий, ветка или файл не найден.";
-    if (error?.status === 409) return "Возник конфликт сохранения. Обновите данные из GitHub и повторите.";
-    return error?.message || "Неизвестная ошибка.";
-  }
+    const message = String(error?.message || "");
 
-  function utf8ToBase64(text) {
-    const bytes = new TextEncoder().encode(text);
-    let binary = "";
-    const chunkSize = 0x8000;
-
-    for (let index = 0; index < bytes.length; index += chunkSize) {
-      binary += String.fromCharCode(...bytes.subarray(index, index + chunkSize));
+    if (/jwt|session|not authenticated|auth session missing/i.test(message)) {
+      return "Сеанс администратора завершён. Войдите ещё раз.";
     }
 
-    return btoa(binary);
-  }
+    if (/row-level security|permission denied|not authorized/i.test(message)) {
+      return "У аккаунта нет прав на изменение сайта.";
+    }
 
-  function base64ToUtf8(base64) {
-    const binary = atob(String(base64).replace(/\n/g, ""));
-    const bytes = Uint8Array.from(binary, char => char.charCodeAt(0));
-    return new TextDecoder().decode(bytes);
-  }
+    if (/bucket not found/i.test(message)) {
+      return "Хранилище offskull-media не создано. Выполните SQL-настройку.";
+    }
 
-  function fileToBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(String(reader.result).split(",")[1]);
-      reader.onerror = () => reject(new Error("Не удалось прочитать изображение."));
-      reader.readAsDataURL(file);
-    });
+    if (/payload too large|maximum allowed size/i.test(message)) {
+      return "Файл слишком большой.";
+    }
+
+    return message || "Неизвестная ошибка.";
   }
 
   function validateImage(file) {
     if (!file) throw new Error("Изображение не выбрано.");
+
     if (!String(file.type || "").startsWith("image/")) {
       throw new Error("Выбранный файл не является изображением.");
     }
+
     if (file.size > MAX_IMAGE_SIZE) {
-      throw new Error("Размер одного изображения должен быть не больше 20 МБ.");
+      throw new Error(
+        "Размер одного изображения должен быть не больше 20 МБ."
+      );
     }
   }
 
@@ -263,7 +115,11 @@
 
     if (byType[file.type]) return byType[file.type];
 
-    const fromName = String(file.name || "").split(".").pop().toLowerCase();
+    const fromName = String(file.name || "")
+      .split(".")
+      .pop()
+      .toLowerCase();
+
     return ["jpg", "jpeg", "png", "webp", "gif"].includes(fromName)
       ? fromName
       : "jpg";
@@ -271,10 +127,11 @@
 
   function slugify(value) {
     const map = {
-      а:"a", б:"b", в:"v", г:"g", д:"d", е:"e", ё:"e", ж:"zh", з:"z",
-      и:"i", й:"y", к:"k", л:"l", м:"m", н:"n", о:"o", п:"p", р:"r",
-      с:"s", т:"t", у:"u", ф:"f", х:"h", ц:"ts", ч:"ch", ш:"sh",
-      щ:"sch", ы:"y", э:"e", ю:"yu", я:"ya", ь:"", ъ:""
+      а:"a", б:"b", в:"v", г:"g", д:"d", е:"e", ё:"e",
+      ж:"zh", з:"z", и:"i", й:"y", к:"k", л:"l", м:"m",
+      н:"n", о:"o", п:"p", р:"r", с:"s", т:"t", у:"u",
+      ф:"f", х:"h", ц:"ts", ч:"ch", ш:"sh", щ:"sch",
+      ы:"y", э:"e", ю:"yu", я:"ya", ь:"", ъ:""
     };
 
     return String(value || "")
@@ -323,78 +180,110 @@
   }
 
   function makeContentFile(data) {
-    return `window.OFFSKULL_DATA = ${JSON.stringify(cleanData(data), null, 2)};\n`;
+    return (
+      `window.OFFSKULL_DATA = ` +
+      `${JSON.stringify(cleanData(data), null, 2)};\n`
+    );
   }
 
-  async function loadRemoteData(session = getSession()) {
-    const remote = await getGitHubFile("assets/js/content.js", false, session);
-    const source = base64ToUtf8(remote.content);
-    const marker = "window.OFFSKULL_DATA =";
-    const markerIndex = source.indexOf(marker);
+  async function loadRemoteData() {
+    const client = getClient();
 
-    if (markerIndex < 0) {
-      throw new Error("Не удалось распознать файл assets/js/content.js.");
+    const { data, error } = await client
+      .from("site_content")
+      .select("content")
+      .eq("id", "main")
+      .maybeSingle();
+
+    if (error) throw error;
+
+    if (data?.content) {
+      return JSON.parse(JSON.stringify(data.content));
     }
 
-    const jsonText = source
-      .slice(markerIndex + marker.length)
-      .trim()
-      .replace(/;\s*$/, "");
-
-    return JSON.parse(jsonText);
+    return JSON.parse(JSON.stringify(
+      window.OFFSKULL_DATA || {
+        site: {
+          name: "OffSkull Comics",
+          authorName: "Автор"
+        },
+        comics: [],
+        characters: []
+      }
+    ));
   }
 
-  async function saveData(
-    data,
-    message = "Обновлены данные через панель администратора",
-    session = getSession()
-  ) {
-    const content = makeContentFile(data);
+  async function saveData(data) {
+    const client = getClient();
+    const clean = cleanData(data);
 
-    return putGitHubFile(
-      "assets/js/content.js",
-      utf8ToBase64(content),
-      message,
-      session
-    );
+    const { data: saved, error } = await client
+      .from("site_content")
+      .upsert(
+        {
+          id: "main",
+          content: clean,
+          updated_at: new Date().toISOString()
+        },
+        { onConflict: "id" }
+      )
+      .select("content")
+      .single();
+
+    if (error) throw error;
+    return saved;
   }
 
-  async function uploadImage(file, path, message, session = getSession()) {
+  async function uploadImage(file, path) {
     validateImage(file);
-    const content = await fileToBase64(file);
-    await putGitHubFile(path, content, message, session);
-    return path;
+
+    const client = getClient();
+    const bucket = window.OffSkullSupabase.getBucket();
+
+    const { error } = await client.storage
+      .from(bucket)
+      .upload(path, file, {
+        cacheControl: "3600",
+        contentType: file.type || undefined,
+        upsert: false
+      });
+
+    if (error) throw error;
+
+    const { data } = client.storage
+      .from(bucket)
+      .getPublicUrl(path);
+
+    if (!data?.publicUrl) {
+      throw new Error("Не удалось получить ссылку на изображение.");
+    }
+
+    return data.publicUrl;
   }
 
-  async function uploadCharacterImage(file, characterName, session = getSession()) {
-    validateImage(file);
-
+  async function uploadCharacterImage(file, characterName) {
     const extension = extensionFor(file);
     const name = slugify(characterName) || "character";
-    const filename = `${name}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${extension}`;
-    const path = `assets/images/characters/${filename}`;
+    const filename =
+      `${name}-${Date.now()}-` +
+      `${Math.random().toString(36).slice(2, 7)}.${extension}`;
 
     return uploadImage(
       file,
-      path,
-      `Добавлено изображение персонажа ${characterName || "Без имени"}`,
-      session
+      `characters/${filename}`
     );
   }
 
-  async function uploadComicCover(file, comicId, comicTitle, session = getSession()) {
-    validateImage(file);
-
+  async function uploadComicCover(file, comicId, comicTitle) {
     const extension = extensionFor(file);
     const safeId = slugify(comicId || comicTitle) || "comic";
-    const filename = `cover-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${extension}`;
-    const path = `assets/images/comics/${safeId}/${filename}`;
+    const filename =
+      `cover-${Date.now()}-` +
+      `${Math.random().toString(36).slice(2, 7)}.${extension}`;
 
     return uploadImage(
       file,
-      path,
-      `Обновлена обложка комикса ${comicTitle || safeId}`,
-      session
+      `comics/${safeId}/${filename}`
     );
   }
 
@@ -402,51 +291,44 @@
     file,
     comicId,
     issueNumber,
-    pageNumber,
-    session = getSession()
+    pageNumber
   ) {
-    validateImage(file);
-
     const extension = extensionFor(file);
     const safeId = slugify(comicId) || "comic";
     const safeIssue = Math.max(1, Number(issueNumber) || 1);
     const safePage = Math.max(1, Number(pageNumber) || 1);
-    const filename = `page-${String(safePage).padStart(3, "0")}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${extension}`;
-    const path = `assets/images/comics/${safeId}/issue-${safeIssue}/${filename}`;
+
+    const filename =
+      `page-${String(safePage).padStart(3, "0")}-` +
+      `${Date.now()}-${Math.random().toString(36).slice(2, 7)}.` +
+      `${extension}`;
 
     return uploadImage(
       file,
-      path,
-      `Добавлена страница ${safePage} выпуска ${safeIssue}`,
-      session
+      `comics/${safeId}/issue-${safeIssue}/${filename}`
     );
   }
 
   function downloadText(filename, content) {
-    const blob = new Blob([content], {
-      type: "text/javascript;charset=utf-8"
-    });
+    const blob = new Blob(
+      [content],
+      { type: "text/javascript;charset=utf-8" }
+    );
+
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
     link.download = filename;
     link.click();
+
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
   window.OffSkullAdmin = {
     getSession,
-    setSession,
-    clearSession,
     requireSession,
-    verifySession,
+    clearSession,
     friendlyError,
-    getGitHubFile,
-    putGitHubFile,
-    utf8ToBase64,
-    base64ToUtf8,
-    fileToBase64,
-    extensionFor,
     slugify,
     cleanData,
     makeContentFile,

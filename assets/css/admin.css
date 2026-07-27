@@ -943,3 +943,26 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+
+/* Supabase admin version */
+.admin-session-card {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 11px 14px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--surface);
+}
+
+.admin-session-card span {
+  color: var(--muted);
+}
+
+.admin-security-note {
+  margin-top: 20px;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+}

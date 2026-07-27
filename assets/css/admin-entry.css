@@ -1,0 +1,20 @@
+.admin-entry-link {
+  color: var(--accent, #f6c514) !important;
+  border: 1px solid currentColor;
+  border-radius: 10px;
+  padding: 9px 13px !important;
+  white-space: nowrap;
+}
+
+.admin-entry-link:hover,
+.admin-entry-link:focus-visible {
+  color: #0b0b0c !important;
+  background: var(--accent, #f6c514) !important;
+}
+
+@media (max-width: 680px) {
+  .admin-entry-link {
+    margin-top: 6px;
+    text-align: center;
+  }
+}

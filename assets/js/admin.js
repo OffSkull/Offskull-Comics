@@ -1,7 +1,7 @@
-(() => {
+(async () => {
   "use strict";
 
-  const session = OffSkullAdmin.requireSession();
+  const session = await OffSkullAdmin.requireSession();
   if (!session) return;
 
   const fallbackData = {
@@ -32,8 +32,8 @@
   const characterList = document.querySelector("#admin-character-list");
   const statusBox = document.querySelector("#admin-status");
 
-  document.querySelector("#admin-session-repo").textContent =
-    `${session.owner}/${session.repo} · ${session.branch}`;
+  document.querySelector("#admin-user-email").textContent =
+    session.user?.email || "Администратор";
 
   normalizeWorkingData();
   renderAll();
@@ -740,7 +740,7 @@
 
   async function reloadFromGitHub() {
     setBusy(true);
-    showStatus("busy", "Загружаем данные", "Получаем последнюю версию content.js.");
+    showStatus("busy", "Загружаем данные", "Получаем последнюю версию из базы данных.");
 
     try {
       clearPendingFiles();
@@ -887,7 +887,7 @@
       showStatus(
         "busy",
         "Публикуем данные",
-        "Обновляем assets/js/content.js."
+        "Обновляем данные сайта."
       );
 
       await OffSkullAdmin.saveData(
@@ -964,8 +964,8 @@
     comic.issues.forEach(cleanupIssueResources);
   }
 
-  function logout() {
-    OffSkullAdmin.clearSession();
+  async function logout() {
+    await OffSkullAdmin.clearSession();
     location.replace("admin-login.html");
   }
 
