@@ -6,14 +6,14 @@
   <meta name="robots" content="noindex,nofollow">
   <title>Панель администратора — OffSkull Comics</title>
   <link rel="stylesheet" href="assets/css/style.css">
-  <link rel="stylesheet" href="assets/css/admin.css">
+  <link rel="stylesheet" href="assets/css/admin.css?v=6">
 </head>
 <body class="admin-body">
   <header class="admin-header">
     <div class="container admin-header-inner">
       <a class="logo" href="index.html">OFF<span>SKULL</span></a>
       <div class="admin-header-actions">
-        <a class="button button-secondary button-small" href="characters.html">Персонажи на сайте</a>
+        <a class="button button-secondary button-small" href="index.html">Посмотреть сайт</a>
         <button class="button button-secondary button-small" id="admin-logout" type="button">Выйти</button>
       </div>
     </div>
@@ -22,29 +22,57 @@
   <main class="container admin-main">
     <section class="admin-intro">
       <p class="eyebrow">Панель управления</p>
-      <h1>Редактор персонажей</h1>
+      <h1>Управление сайтом</h1>
       <p>
-        Здесь можно менять существующие карточки, добавлять новых персонажей,
-        выбирать изображения и публиковать изменения в GitHub.
+        Добавляйте и редактируйте комиксы, обложки, выпуски, страницы и персонажей.
+        Все изменения публикуются прямо в вашем репозитории GitHub.
       </p>
+
       <div class="admin-session-card">
         <span>Подключено:</span>
         <strong id="admin-session-repo">—</strong>
       </div>
     </section>
 
-    <section class="admin-panel">
+    <nav class="admin-tabs" aria-label="Разделы панели администратора">
+      <button class="admin-tab active" type="button" data-admin-tab="comics">
+        Комиксы
+      </button>
+      <button class="admin-tab" type="button" data-admin-tab="characters">
+        Персонажи
+      </button>
+    </nav>
+
+    <div class="admin-actions admin-global-actions">
+      <button class="button button-secondary" id="reload-from-github" type="button">
+        Обновить данные из GitHub
+      </button>
+      <button class="button button-secondary" id="download-backup" type="button">
+        Скачать резервную копию
+      </button>
+    </div>
+
+    <section class="admin-panel admin-tab-panel" data-admin-panel="comics">
+      <div class="admin-panel-heading">
+        <div>
+          <h2>Комиксы</h2>
+          <p>
+            Создавайте новые комиксы, меняйте обложки и загружайте страницы выпусков.
+          </p>
+        </div>
+        <button class="button" id="add-comic" type="button">+ Добавить комикс</button>
+      </div>
+
+      <div class="admin-comic-list" id="admin-comic-list"></div>
+    </section>
+
+    <section class="admin-panel admin-tab-panel" data-admin-panel="characters" hidden>
       <div class="admin-panel-heading">
         <div>
           <h2>Персонажи</h2>
-          <p>Изменения появятся на странице «Персонажи» после публикации.</p>
+          <p>Меняйте существующие карточки и добавляйте новых персонажей.</p>
         </div>
         <button class="button" id="add-character" type="button">+ Добавить персонажа</button>
-      </div>
-
-      <div class="admin-actions admin-actions-top">
-        <button class="button button-secondary" id="reload-from-github" type="button">Обновить данные из GitHub</button>
-        <button class="button button-secondary" id="download-backup" type="button">Скачать резервную копию</button>
       </div>
 
       <div class="admin-character-list" id="admin-character-list"></div>
@@ -52,11 +80,13 @@
 
     <section class="admin-save-bar">
       <div>
-        <strong>Сохранить изменения на сайте</strong>
-        <p>Картинки будут загружены, а список персонажей обновится автоматически.</p>
+        <strong>Опубликовать изменения</strong>
+        <p>
+          Сначала будут загружены новые картинки, затем обновится файл данных сайта.
+        </p>
       </div>
       <button class="button admin-save-button" id="save-to-github" type="button">
-        Опубликовать изменения
+        Сохранить на сайт
       </button>
     </section>
 
@@ -64,7 +94,7 @@
   </main>
 
   <script src="assets/js/content.js"></script>
-  <script src="assets/js/admin-core.js?v=3"></script>
-  <script src="assets/js/admin.js?v=3"></script>
+  <script src="assets/js/admin-core.js?v=6"></script>
+  <script src="assets/js/admin.js?v=6"></script>
 </body>
 </html>

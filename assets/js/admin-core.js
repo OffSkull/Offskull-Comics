@@ -7,6 +7,7 @@
     "offskull_admin_session_v3"
   ];
   const SESSION_LIFETIME_MS = 2 * 60 * 60 * 1000;
+  const MAX_IMAGE_SIZE = 20 * 1024 * 1024;
 
   function safeGet(storage, key) {
     try {
@@ -68,7 +69,6 @@
 
     if (!session) {
       session = parseStored(safeGet(localStorage, SESSION_KEY));
-
       if (session) {
         safeSet(sessionStorage, SESSION_KEY, JSON.stringify(session));
       }
@@ -212,7 +212,7 @@
     if (error?.status === 401) return "Токен неверный, просрочен или был отозван.";
     if (error?.status === 403) return "У токена нет разрешения Contents: Read and write.";
     if (error?.status === 404) return "Репозиторий, ветка или файл не найден.";
-    if (error?.status === 409) return "Возник конфликт сохранения. Обновите страницу и повторите.";
+    if (error?.status === 409) return "Возник конфликт сохранения. Обновите данные из GitHub и повторите.";
     return error?.message || "Неизвестная ошибка.";
   }
 
@@ -241,6 +241,16 @@
       reader.onerror = () => reject(new Error("Не удалось прочитать изображение."));
       reader.readAsDataURL(file);
     });
+  }
+
+  function validateImage(file) {
+    if (!file) throw new Error("Изображение не выбрано.");
+    if (!String(file.type || "").startsWith("image/")) {
+      throw new Error("Выбранный файл не является изображением.");
+    }
+    if (file.size > MAX_IMAGE_SIZE) {
+      throw new Error("Размер одного изображения должен быть не больше 20 МБ.");
+    }
   }
 
   function extensionFor(file) {
@@ -278,11 +288,37 @@
   }
 
   function cleanData(data) {
-    const clean = JSON.parse(JSON.stringify(data));
-    clean.characters?.forEach(character => {
+    const clean = JSON.parse(JSON.stringify(data || {}));
+
+    if (!clean.site || typeof clean.site !== "object") clean.site = {};
+    if (!Array.isArray(clean.comics)) clean.comics = [];
+    if (!Array.isArray(clean.characters)) clean.characters = [];
+
+    clean.characters.forEach(character => {
       delete character._adminKey;
       delete character._selectedFile;
     });
+
+    clean.comics.forEach(comic => {
+      delete comic._adminKey;
+      delete comic._coverFile;
+
+      if (!Array.isArray(comic.issues)) comic.issues = [];
+
+      comic.issues.forEach(issue => {
+        delete issue._adminKey;
+
+        if (!Array.isArray(issue.pages)) issue.pages = [];
+
+        issue.pages = issue.pages
+          .map(page => {
+            if (typeof page === "string") return page;
+            return page?.path || "";
+          })
+          .filter(Boolean);
+      });
+    });
+
     return clean;
   }
 
@@ -297,7 +333,7 @@
     const markerIndex = source.indexOf(marker);
 
     if (markerIndex < 0) {
-      throw new Error("Не удалось распознать файл content.js.");
+      throw new Error("Не удалось распознать файл assets/js/content.js.");
     }
 
     const jsonText = source
@@ -308,7 +344,11 @@
     return JSON.parse(jsonText);
   }
 
-  async function saveData(data, message = "Обновлены персонажи через сайт", session = getSession()) {
+  async function saveData(
+    data,
+    message = "Обновлены данные через панель администратора",
+    session = getSession()
+  ) {
     const content = makeContentFile(data);
 
     return putGitHubFile(
@@ -319,29 +359,67 @@
     );
   }
 
+  async function uploadImage(file, path, message, session = getSession()) {
+    validateImage(file);
+    const content = await fileToBase64(file);
+    await putGitHubFile(path, content, message, session);
+    return path;
+  }
+
   async function uploadCharacterImage(file, characterName, session = getSession()) {
-    if (!file) return null;
-    if (!file.type.startsWith("image/")) {
-      throw new Error("Выбранный файл не является изображением.");
-    }
-    if (file.size > 15 * 1024 * 1024) {
-      throw new Error("Размер изображения должен быть не больше 15 МБ.");
-    }
+    validateImage(file);
 
     const extension = extensionFor(file);
     const name = slugify(characterName) || "character";
-    const filename = `${name}-${Date.now()}.${extension}`;
+    const filename = `${name}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${extension}`;
     const path = `assets/images/characters/${filename}`;
-    const content = await fileToBase64(file);
 
-    await putGitHubFile(
+    return uploadImage(
+      file,
       path,
-      content,
       `Добавлено изображение персонажа ${characterName || "Без имени"}`,
       session
     );
+  }
 
-    return path;
+  async function uploadComicCover(file, comicId, comicTitle, session = getSession()) {
+    validateImage(file);
+
+    const extension = extensionFor(file);
+    const safeId = slugify(comicId || comicTitle) || "comic";
+    const filename = `cover-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${extension}`;
+    const path = `assets/images/comics/${safeId}/${filename}`;
+
+    return uploadImage(
+      file,
+      path,
+      `Обновлена обложка комикса ${comicTitle || safeId}`,
+      session
+    );
+  }
+
+  async function uploadComicPage(
+    file,
+    comicId,
+    issueNumber,
+    pageNumber,
+    session = getSession()
+  ) {
+    validateImage(file);
+
+    const extension = extensionFor(file);
+    const safeId = slugify(comicId) || "comic";
+    const safeIssue = Math.max(1, Number(issueNumber) || 1);
+    const safePage = Math.max(1, Number(pageNumber) || 1);
+    const filename = `page-${String(safePage).padStart(3, "0")}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${extension}`;
+    const path = `assets/images/comics/${safeId}/issue-${safeIssue}/${filename}`;
+
+    return uploadImage(
+      file,
+      path,
+      `Добавлена страница ${safePage} выпуска ${safeIssue}`,
+      session
+    );
   }
 
   function downloadText(filename, content) {
@@ -374,7 +452,10 @@
     makeContentFile,
     loadRemoteData,
     saveData,
+    uploadImage,
     uploadCharacterImage,
+    uploadComicCover,
+    uploadComicPage,
     downloadText
   };
 })();
