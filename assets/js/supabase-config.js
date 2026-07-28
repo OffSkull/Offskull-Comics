@@ -1,9 +1,17 @@
 /*
-  Вставьте Project URL и Publishable key из Supabase.
-  Никогда не вставляйте service_role key.
+  Настройка Supabase для OffSkull Comics.
+
+  Здесь разрешено использовать только:
+  - Project URL;
+  - Publishable key.
+
+  Нельзя использовать service_role или secret key.
 */
+
 window.OFFSKULL_SUPABASE_CONFIG = {
-  url: "PASTE_YOUR_SUPABASE_PROJECT_URL",
-  publishableKey: "PASTE_YOUR_SUPABASE_PUBLISHABLE_KEY",
+  url: "https://qrdgnovuunruljpsffmk.supabase.co",
+
+  publishableKey: "sb_publishable_9Gsy0Pu8jutwxQxxZdEjAQ_1gBpITCM",
+
   bucket: "offskull-media"
 };
