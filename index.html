@@ -1,174 +1,287 @@
 <!doctype html>
 <html lang="ru">
+
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
   <meta
     name="description"
     content="OffSkull Comics — авторские комиксы"
   >
+
   <title>OffSkull Comics</title>
-<link rel="stylesheet" href="assets/css/style.css">
 
-<link
-  rel="stylesheet"
-  href="assets/css/offskull-new.css?v=20260728-1"
->
+  <!-- Основное оформление -->
+  <link
+    rel="stylesheet"
+    href="assets/css/style.css"
+  >
 
-<link
-  rel="stylesheet"
-  href="assets/css/hero-feature-news.css?v=2"
->
+  <!-- Дополнительное оформление сайта -->
+  <link
+    rel="stylesheet"
+    href="assets/css/offskull-new.css?v=20260728-2"
+  >
 
-<header class="site-header">
-  <div class="container header-inner">
-    <a class="logo" href="index.html">OFF<span>SKULL</span></a>
-    <button
-      class="menu-toggle"
-      type="button"
-      aria-expanded="false"
-      aria-label="Открыть меню"
-    >☰</button>
-<nav class="site-nav">
-      <a href="index.html">Главная</a>
-      <a href="comic.html">Комиксы</a>
-      <a href="characters.html">Персонажи</a>
-      <a href="author.html">Об авторе</a>
-      <a class="admin-entry-link" href="admin-login.html">
-        Вход администратора
-      </a>
-    </nav>
-  </div>
-</header>
+  <!-- Оформление новости на баннере -->
+  <link
+    rel="stylesheet"
+    href="assets/css/hero-feature-news.css?v=3"
+  >
+</head>
 
-<main>
-  <section class="hero">
-    <div class="container">
-      <div class="hero-card">
-        
-        <div class="hero-content">
-     <aside
-  </div>
-</aside>     
-          <p class="eyebrow">OffSkull Comics</p>
-          <h1 id="hero-title">Мир авторских комиксов</h1>
-          <p class="lead" id="hero-text"></p>
+<body>
 
-          <div class="hero-actions">
-            <a
-              class="button"
-              id="hero-read-link"
-              href="comic.html"
-            >Начать читать</a>
+  <!-- Верхнее меню -->
 
-            <a
-              class="button button-secondary"
-              href="characters.html"
-            >Персонажи</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-<aside
-  class="hero-feature-news"
-  id="hero-feature-news"
-  aria-label="Главная новость OffSkull Comics"
-  hidden
->
-  <div class="hero-feature-news-header">
-    <span class="hero-feature-news-icon">
-      ☠
-    </span>
-
-    <strong>
-      Новости
-    </strong>
-
-    <span class="hero-feature-news-lines"></span>
-  </div>
-
-  <div class="hero-feature-news-body">
-
-    <div class="hero-feature-news-cover">
-      <img
-        id="hero-feature-news-image"
-        src="assets/images/banner.svg"
-        alt="Обложка нового комикса"
-      >
-    </div>
-
-    <div class="hero-feature-news-content">
-
-      <span
-        class="hero-feature-news-label"
-        id="hero-feature-news-label"
-      >
-        Скоро
-      </span>
-
-      <h2 id="hero-feature-news-title">
-        Скоро выход комикса
-      </h2>
-
-      <div class="hero-feature-news-divider">
-        <span></span>
-        <b>☠</b>
-        <span></span>
-      </div>
-
-      <p id="hero-feature-news-text">
-        Новая история. Новый герой. Новый мир.
-      </p>
+  <header class="site-header">
+    <div class="container header-inner">
 
       <a
-        class="hero-feature-news-button"
-        id="hero-feature-news-link"
-        href="#"
+        class="logo"
+        href="index.html"
       >
-        <span id="hero-feature-news-button-text">
-          Узнать больше
-        </span>
-
-        <b>→</b>
+        OFF<span>SKULL</span>
       </a>
 
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-label="Открыть меню"
+      >
+        ☰
+      </button>
+
+      <nav class="site-nav">
+        <a href="index.html">
+          Главная
+        </a>
+
+        <a href="comic.html">
+          Комиксы
+        </a>
+
+        <a href="characters.html">
+          Персонажи
+        </a>
+
+        <a href="author.html">
+          Об авторе
+        </a>
+
+        <a
+          class="admin-entry-link"
+          href="admin-login.html"
+        >
+          Вход администратора
+        </a>
+      </nav>
+
     </div>
-  </div>
-</aside>
-  <section class="section">
-    <div class="container">
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">Последние публикации</p>
-          <h2>Новые комиксы</h2>
+  </header>
+
+  <main>
+
+    <!-- Главный баннер -->
+
+    <section class="hero">
+      <div class="container">
+
+        <div class="hero-card">
+
+          <!-- Текст слева -->
+
+          <div class="hero-content">
+
+            <p class="eyebrow">
+              OffSkull Comics
+            </p>
+
+            <h1 id="hero-title">
+              Мир авторских комиксов
+            </h1>
+
+            <p
+              class="lead"
+              id="hero-text"
+            ></p>
+
+            <div class="hero-actions">
+
+              <a
+                class="button"
+                id="hero-read-link"
+                href="comic.html"
+              >
+                Начать читать
+              </a>
+
+              <a
+                class="button button-secondary"
+                href="characters.html"
+              >
+                Персонажи
+              </a>
+
+            </div>
+          </div>
+
+          <!-- Новость справа -->
+
+          <aside
+            class="hero-feature-news"
+            id="hero-feature-news"
+            aria-label="Главная новость OffSkull Comics"
+            hidden
+          >
+
+            <div class="hero-feature-news-header">
+
+              <span class="hero-feature-news-icon">
+                ☠
+              </span>
+
+              <strong>
+                Новости
+              </strong>
+
+              <span class="hero-feature-news-lines"></span>
+
+            </div>
+
+            <div class="hero-feature-news-body">
+
+              <!-- Изображение новости -->
+
+              <div class="hero-feature-news-cover">
+
+                <img
+                  id="hero-feature-news-image"
+                  src="assets/images/banner.svg"
+                  alt="Обложка нового комикса"
+                >
+
+              </div>
+
+              <!-- Текст новости -->
+
+              <div class="hero-feature-news-content">
+
+                <span
+                  class="hero-feature-news-label"
+                  id="hero-feature-news-label"
+                >
+                  Скоро
+                </span>
+
+                <h2 id="hero-feature-news-title">
+                  Скоро выход комикса
+                </h2>
+
+                <div class="hero-feature-news-divider">
+                  <span></span>
+                  <b>☠</b>
+                  <span></span>
+                </div>
+
+                <p id="hero-feature-news-text">
+                  Новая история. Новый герой. Новый мир.
+                </p>
+
+                <a
+                  class="hero-feature-news-button"
+                  id="hero-feature-news-link"
+                  href="comic.html"
+                >
+
+                  <span id="hero-feature-news-button-text">
+                    Узнать больше
+                  </span>
+
+                  <b>→</b>
+                </a>
+
+              </div>
+            </div>
+          </aside>
+
         </div>
       </div>
+    </section>
 
-      <div
-        class="comics-grid"
-        id="featured-comics"
-      ></div>
+    <!-- Новые комиксы -->
+
+    <section class="section">
+      <div class="container">
+
+        <div class="section-heading">
+          <div>
+
+            <p class="eyebrow">
+              Последние публикации
+            </p>
+
+            <h2>
+              Новые комиксы
+            </h2>
+
+          </div>
+        </div>
+
+        <div
+          class="comics-grid"
+          id="featured-comics"
+        ></div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Подвал -->
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+
+      <strong data-site-name>
+        OffSkull Comics
+      </strong>
+
+      <span>
+        © <span data-year></span>
+        <span data-author-name>Автор</span>
+      </span>
+
     </div>
-  </section>
-</main>
+  </footer>
 
-<footer class="site-footer">
-  <div class="container footer-inner">
-    <strong data-site-name>OffSkull Comics</strong>
-    <span>
-      © <span data-year></span>
-      <span data-author-name>Автор</span>
-    </span>
-  </div>
-</footer>
+  <!-- Данные сайта -->
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="assets/js/supabase-config.js?v=10"></script>
-<script src="assets/js/supabase-client.js?v=10"></script>
-<script src="assets/js/site-data.js?v=10"></script>
-<script src="assets/js/content.js"></script>
-<script src="assets/js/app.js?v=10"></script>
-<script src="assets/js/hero-feature-news.js?v=1"></script>
+  <script src="assets/js/content.js"></script>
+
+  <!-- Supabase -->
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+  ></script>
+
+  <script src="assets/js/supabase-config.js?v=10"></script>
+  <script src="assets/js/supabase-client.js?v=10"></script>
+  <script src="assets/js/site-data.js?v=10"></script>
+
+  <!-- Основной код сайта -->
+
+  <script src="assets/js/app.js?v=10"></script>
+
+  <!-- Новость на баннере -->
+
+  <script src="assets/js/hero-feature-news.js?v=3"></script>
+
 </body>
 </html>
