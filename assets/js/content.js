@@ -19,19 +19,12 @@ window.OFFSKULL_DATA = {
   
 heroNews: {
   visible: true,
-
   label: "Скоро",
-
   title: "Скоро выход нового комикса",
-
   text: "Новая история. Новый герой. Новый мир.",
-
   buttonText: "Узнать больше",
-
   link: "comic.html",
-
   image: "assets/images/banner.svg",
-
   imageAlt: "Скоро новый комикс"
 },
   
