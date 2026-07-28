@@ -16,7 +16,25 @@ window.OFFSKULL_DATA = {
 Главная цель проекта — создавать оригинальные русскоязычные комиксы, которые хочется читать, обсуждать и пересматривать. OffSkull Comics — это мир авторских историй, где возможно всё.`
 },
   },
+  
+heroNews: {
+  visible: true,
 
+  label: "Скоро",
+
+  title: "Скоро выход нового комикса",
+
+  text: "Новая история. Новый герой. Новый мир.",
+
+  buttonText: "Узнать больше",
+
+  link: "comic.html",
+
+  image: "assets/images/banner.svg",
+
+  imageAlt: "Скоро новый комикс"
+},
+  
   comics: [
     {
       id: "otshchipentsy",
