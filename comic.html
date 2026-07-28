@@ -1,57 +1,126 @@
 <!doctype html>
 <html lang="ru">
+
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <meta
+    name="description"
+    content="Каталог комиксов OffSkull Comics"
+  >
+
   <title>Комиксы — OffSkull Comics</title>
-  <link rel="stylesheet" href="assets/css/style.css">
 
   <link
-  rel="stylesheet"
-  href="assets/css/offskull-new.css?v=20260728-1"
->
-  <link rel="stylesheet" href="assets/css/admin-entry.css?v=10">
+    rel="stylesheet"
+    href="assets/css/style.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="assets/css/offskull-new.css?v=20260728-3"
+  >
+
+  <link
+    rel="stylesheet"
+    href="assets/css/admin-entry.css?v=10"
+  >
 </head>
+
 <body>
 
-<header class="site-header">
-  <div class="container header-inner">
-    <a class="logo" href="index.html">OFF<span>SKULL</span></a>
-    <button
-      class="menu-toggle"
-      type="button"
-      aria-expanded="false"
-      aria-label="Открыть меню"
-    >☰</button>
-<nav class="site-nav">
-      <a href="index.html">Главная</a>
-      <a href="comic.html">Комиксы</a>
-      <a href="characters.html">Персонажи</a>
-      <a href="author.html">Об авторе</a>
-      <a class="admin-entry-link" href="admin-login.html">
-        Вход администратора
+  <header class="site-header">
+    <div class="container header-inner">
+
+      <a class="logo" href="index.html">
+        OFF<span>SKULL</span>
       </a>
-    </nav>
-  </div>
-</header>
 
-<main class="container" id="comic-page"></main>
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-label="Открыть меню"
+      >
+        ☰
+      </button>
 
-<footer class="site-footer">
-  <div class="container footer-inner">
-    <strong data-site-name>OffSkull Comics</strong>
-    <span>
-      © <span data-year></span>
-      <span data-author-name>Автор</span>
-    </span>
-  </div>
-</footer>
+      <nav class="site-nav">
+        <a href="index.html">
+          Главная
+        </a>
 
-<script src="assets/js/content.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="assets/js/supabase-config.js?v=10"></script>
-<script src="assets/js/supabase-client.js?v=10"></script>
-<script src="assets/js/site-data.js?v=10"></script>
-<script src="assets/js/app.js?v=11"></script>
+        <a href="comic.html" class="active">
+          Комиксы
+        </a>
+
+        <a href="characters.html">
+          Персонажи
+        </a>
+
+        <a href="author.html">
+          Об авторе
+        </a>
+
+        <a
+          class="admin-entry-link"
+          href="admin-login.html"
+        >
+          Вход администратора
+        </a>
+      </nav>
+
+    </div>
+  </header>
+
+  <main
+    class="container"
+    id="comic-page"
+  >
+    <section class="section">
+      <div class="empty-state">
+        Загружаем комиксы…
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+
+      <strong data-site-name>
+        OffSkull Comics
+      </strong>
+
+      <span>
+        © <span data-year></span>
+        <span data-author-name>Автор</span>
+      </span>
+
+    </div>
+  </footer>
+
+  <!-- Резервные данные сайта -->
+
+  <script src="assets/js/content.js"></script>
+
+  <!-- Supabase -->
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+  ></script>
+
+  <script src="assets/js/supabase-config.js?v=10"></script>
+  <script src="assets/js/supabase-client.js?v=10"></script>
+  <script src="assets/js/site-data.js?v=10"></script>
+
+  <!-- Отдельный код страницы комиксов -->
+
+  <script src="assets/js/comic-page.js?v=1"></script>
+
 </body>
 </html>
