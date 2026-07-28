@@ -519,3 +519,13 @@ background-color: #050505;
     font-size: 15px;
   }
 }
+#author-text {
+  max-width: 850px;
+  margin: 0;
+
+  color: #d2d2d2;
+
+  font-size: 17px;
+  line-height: 1.8;
+
+  white-space: pre-line;
