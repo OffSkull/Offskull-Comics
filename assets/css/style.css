@@ -397,3 +397,125 @@ background-color: #050505;
   color: #ffffff !important;
   text-shadow: 0 3px 10px #000000 !important;
 }
+.author-card {
+  display: grid;
+  grid-template-columns: 380px minmax(0, 1fr);
+  align-items: center;
+  gap: 60px;
+
+  padding: 45px;
+
+  color: #ffffff;
+  background: #0b0b0c;
+
+  border: 2px solid #f6c514;
+  border-radius: 18px;
+
+  box-shadow: 12px 12px 0 #f6c514;
+}
+
+.author-photo {
+  position: relative;
+
+  width: 100%;
+  overflow: hidden;
+
+  aspect-ratio: 4 / 5;
+
+  background: #18181b;
+  border: 2px solid #ffffff;
+}
+
+.author-photo::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+
+  width: 65%;
+  height: 8px;
+
+  background: #f6c514;
+
+  content: "";
+}
+
+.author-photo img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+  object-position: center top;
+
+  filter: contrast(1.05);
+}
+
+.author-information {
+  max-width: 750px;
+}
+
+.author-information .eyebrow {
+  margin-bottom: 16px;
+
+  color: #f6c514;
+
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+
+  text-transform: uppercase;
+}
+
+.author-information h2 {
+  margin: 0 0 25px;
+
+  color: #ffffff;
+
+  font-family:
+    Impact,
+    "Arial Black",
+    Arial,
+    sans-serif;
+
+  font-size: clamp(48px, 7vw, 90px);
+  line-height: 0.95;
+
+  text-transform: uppercase;
+}
+
+.author-information #author-text {
+  margin: 0;
+
+  color: #d2d2d2;
+
+  font-size: 17px;
+  line-height: 1.8;
+}
+
+/* Страница автора на телефоне */
+
+@media (max-width: 800px) {
+  .author-card {
+    grid-template-columns: 1fr;
+
+    gap: 30px;
+
+    padding: 22px;
+
+    box-shadow: 7px 7px 0 #f6c514;
+  }
+
+  .author-photo {
+    width: min(100%, 420px);
+    margin: 0 auto;
+  }
+
+  .author-information h2 {
+    font-size: 52px;
+  }
+
+  .author-information #author-text {
+    font-size: 15px;
+  }
+}
