@@ -298,3 +298,18 @@
     max-width: 760px !important;
   }
 }
+  /* Сдвигаем новости к правому краю баннера */
+
+@media (min-width: 1051px) {
+  .hero-news {
+    right: -50px !important;
+    left: auto !important;
+
+    width: 370px !important;
+  }
+
+  .hero-card .hero-content {
+    width: calc(100% - 420px) !important;
+    max-width: 760px !important;
+  }
+}
