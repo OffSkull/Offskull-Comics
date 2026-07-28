@@ -29,8 +29,18 @@
     );
   }
 
-  const news =
-    siteData.heroNews;
+const news =
+  siteData.heroNews ||
+  window.OFFSKULL_DATA?.heroNews || {
+    visible: true,
+    label: "Скоро",
+    title: "Скоро выход нового комикса",
+    text: "Новая история. Новый герой. Новый мир.",
+    buttonText: "Узнать больше",
+    link: "comic.html",
+    image: "assets/images/banner.svg",
+    imageAlt: "Новость OffSkull Comics"
+  };
 
   if (
     !news ||
