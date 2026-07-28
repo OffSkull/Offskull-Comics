@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Вход администратора — OffSkull Comics</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/style.css?v=1">
+  <link rel="stylesheet" href="assets/css/admin.css?v=1">
+</head>
+<body class="admin-body">
+  <header class="admin-header"><div class="container admin-header-inner"><a class="logo" href="index.html"><img src="assets/images/logo.svg" alt="OffSkull Comics"></a><a class="button button-secondary button-small" href="index.html">← На сайт</a></div></header>
+  <main class="login-main">
+    <section class="login-card">
+      <p class="eyebrow">Закрытая зона</p><h1>Вход администратора</h1>
+      <p>Обычным читателям вход не требуется.</p>
+      <form id="login-form">
+        <label>Логин<input name="email" type="email" autocomplete="username" required></label>
+        <label>Пароль<div class="password-row"><input name="password" type="password" autocomplete="current-password" required><button type="button" id="toggle-password">👁</button></div></label>
+        <button class="button" type="submit">Войти</button>
+      </form>
+      <div class="admin-message" id="login-status"></div>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-config.js?v=1"></script>
+  <script src="assets/js/supabase-client.js?v=1"></script>
+  <script src="assets/js/admin-login.js?v=1"></script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1400" viewBox="0 0 1000 1400">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#070708"/>
+      <stop offset="0.55" stop-color="#1b1b1d"/>
+      <stop offset="1" stop-color="#050506"/>
+    </linearGradient>
+  </defs>
+  <rect width="1000" height="1400" fill="url(#bg)"/>
+  <circle cx="760" cy="350" r="260" fill="#f6c514" opacity=".16"/>
+  <path d="M115 1120 L500 280 L885 1120 Z" fill="none" stroke="#f6c514" stroke-width="18" opacity=".75"/>
+  <path d="M250 1050 L500 500 L750 1050 Z" fill="#111114" stroke="#ffffff" stroke-width="8"/>
+  <circle cx="500" cy="620" r="125" fill="#0b0b0c" stroke="#f6c514" stroke-width="13"/>
+  <path d="M405 620 Q500 520 595 620 Q500 735 405 620Z" fill="#f2efe6"/>
+  <text x="75" y="175" fill="#f6c514" font-family="Impact, Arial Black, sans-serif" font-size="76">OFFSKULL COMICS</text>
+  <text x="75" y="1260" fill="#ffffff" font-family="Impact, Arial Black, sans-serif" font-size="185">ВИКИНГ</text>
+  <text x="80" y="1330" fill="#f6c514" font-family="Arial, sans-serif" font-size="34" font-weight="700">ФЭНТЕЗИ • ПРИКЛЮЧЕНИЯ • БОЕВИК</text>
+</svg>

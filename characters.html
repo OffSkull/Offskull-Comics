@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Персонажи — OffSkull Comics</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/style.css?v=1">
+</head>
+<body data-page="characters">
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="logo" href="index.html"><img src="assets/images/logo.svg" alt="OffSkull Comics"></a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-label="Открыть меню">☰</button>
+    <nav class="site-nav">
+      <a href="index.html">Главная</a><a href="comic.html">Комиксы</a><a href="characters.html" class="active">Персонажи</a><a href="author.html">Об авторе</a>
+      <a class="admin-entry-link" href="admin-login.html">Вход администратора</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="page-hero"><div class="container"><p class="eyebrow">Вселенная OffSkull</p><h1>Персонажи</h1><p>Герои, злодеи и необычные создания авторской вселенной.</p></div></section>
+  <section class="section"><div class="container"><div class="characters-grid" id="characters-grid"></div></div></section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <strong data-site-name>OffSkull Comics</strong>
+    <span>© <span data-year></span> <span data-author-name>Автор</span></span>
+  </div>
+</footer>
+
+
+<script src="assets/js/content.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js?v=1"></script>
+<script src="assets/js/supabase-client.js?v=1"></script>
+<script src="assets/js/data-service.js?v=1"></script>
+<script src="assets/js/app.js?v=1"></script>
+
+</body>
+</html>

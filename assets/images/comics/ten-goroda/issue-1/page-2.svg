@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1700" viewBox="0 0 1200 1700">
+  <rect width="1200" height="1700" fill="#070708"/>
+  <circle cx="830" cy="420" r="300" fill="#f6c514" opacity=".22"/>
+  <path d="M0 1350 L1200 680" stroke="#f6c514" stroke-width="26" opacity=".75"/>
+  <rect x="100" y="1130" width="1000" height="360" rx="34" fill="#111114" stroke="#f6c514" stroke-width="4"/>
+  <text x="140" y="1280" fill="#ffffff" font-family="Impact,Arial Black,Arial" font-size="115">Город не спит</text>
+  <text x="145" y="1390" fill="#f6c514" font-family="Arial, sans-serif" font-size="42">ТЕНЬ ГОРОДА • СТРАНИЦА 2</text>
+</svg>

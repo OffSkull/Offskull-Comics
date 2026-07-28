@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Админ-панель — OffSkull Comics</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/style.css?v=1">
+  <link rel="stylesheet" href="assets/css/admin.css?v=1">
+</head>
+<body class="admin-body">
+  <header class="admin-header">
+    <div class="container admin-header-inner">
+      <a class="logo" href="index.html"><img src="assets/images/logo.svg" alt="OffSkull Comics"></a>
+      <div class="admin-header-actions">
+        <a class="button button-secondary button-small" href="index.html">Посмотреть сайт</a>
+        <button class="button button-secondary button-small" id="restore-seed" type="button">Восстановить стартовые данные</button>
+        <button class="button button-secondary button-small" id="logout" type="button">Выйти</button>
+      </div>
+    </div>
+  </header>
+  <main class="container admin-main">
+    <section class="admin-intro"><p class="eyebrow">Панель управления</p><h1>Редактор сайта</h1><p>Редактируйте новости, комиксы, обложки, выпуски, страницы и персонажей.</p></section>
+    <div id="admin-root"></div>
+    <section class="admin-savebar"><div><strong>Опубликовать изменения</strong><p>Изображения загрузятся в Supabase Storage, данные сохранятся в базе.</p></div><button class="button" id="save-site" type="button">Сохранить на сайт</button></section>
+    <div class="admin-message" id="admin-status"></div>
+  </main>
+  <script src="assets/js/content.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/js/supabase-config.js?v=1"></script>
+  <script src="assets/js/supabase-client.js?v=1"></script>
+  <script src="assets/js/data-service.js?v=1"></script>
+  <script src="assets/js/admin-core.js?v=1"></script>
+  <script src="assets/js/admin.js?v=1"></script>
+</body>
+</html>

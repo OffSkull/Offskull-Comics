@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="OffSkull Comics — авторские русскоязычные комиксы">
+  <title>OffSkull Comics</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/style.css?v=1">
+</head>
+<body data-page="home">
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="logo" href="index.html"><img src="assets/images/logo.svg" alt="OffSkull Comics"></a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-label="Открыть меню">☰</button>
+    <nav class="site-nav">
+      <a href="index.html" class="active">Главная</a><a href="comic.html">Комиксы</a><a href="characters.html">Персонажи</a><a href="author.html">Об авторе</a>
+      <a class="admin-entry-link" href="admin-login.html">Вход администратора</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container">
+      <div class="hero-card">
+        <div class="hero-content">
+          <p class="eyebrow">OffSkull Comics</p>
+          <h1 id="hero-title">Мир авторских комиксов</h1>
+          <p class="lead" id="hero-text"></p>
+          <div class="hero-actions">
+            <a class="button" id="hero-read-link" href="comic.html">Начать читать</a>
+            <a class="button button-secondary" href="characters.html">Персонажи</a>
+          </div>
+        </div>
+        <aside class="hero-feature-news" id="hero-feature-news" hidden>
+          <div class="news-head"><span class="news-icon">☠</span><strong>Новости</strong></div>
+          <div class="news-body">
+            <div class="news-cover"><img data-news-image src="assets/images/comics/ten-goroda/cover.png" alt=""></div>
+            <div class="news-copy">
+              <p class="eyebrow" data-news-label>Скоро</p>
+              <h2 data-news-title>Скоро выход комикса</h2>
+              <p data-news-text></p>
+              <a class="news-button" data-news-link href="comic.html"><span>Узнать больше</span> →</a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      <div class="section-heading"><div><p class="eyebrow">Последние публикации</p><h2>Новые комиксы</h2></div></div>
+      <div class="comics-grid" id="featured-comics"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <strong data-site-name>OffSkull Comics</strong>
+    <span>© <span data-year></span> <span data-author-name>Автор</span></span>
+  </div>
+</footer>
+
+
+<script src="assets/js/content.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-config.js?v=1"></script>
+<script src="assets/js/supabase-client.js?v=1"></script>
+<script src="assets/js/data-service.js?v=1"></script>
+<script src="assets/js/app.js?v=1"></script>
+
+</body>
+</html>

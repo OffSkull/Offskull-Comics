@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1600" viewBox="0 0 1200 1600">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#09090b"/><stop offset="1" stop-color="#25160d"/></linearGradient></defs>
+  <rect width="1200" height="1600" fill="url(#g)"/>
+  <circle cx="900" cy="300" r="260" fill="#ff7a18" opacity=".2"/>
+  <path d="M150 1180 C350 900 430 1010 610 700 C760 440 900 600 1080 320" fill="none" stroke="#ff7a18" stroke-width="32"/>
+  <rect x="90" y="1040" width="1020" height="380" rx="38" fill="#0b0b0d" opacity=".88"/>
+  <text x="140" y="1190" fill="#fff" font-family="Arial Black,Arial" font-size="105">ЯРОМИР</text>
+  <text x="145" y="1290" fill="#ff7a18" font-family="Arial, sans-serif" font-size="40" font-weight="700">РАСКАЛЁННЫЙ МЕТАЛЛ</text>
+  <text x="145" y="1370" fill="#b8b8c4" font-family="Arial, sans-serif" font-size="30">OFFSKULL COMICS</text>
+</svg>

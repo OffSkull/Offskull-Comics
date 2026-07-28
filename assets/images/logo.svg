@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="150" viewBox="0 0 560 150">
+  <rect width="560" height="150" rx="20" fill="#070708"/>
+  <circle cx="76" cy="75" r="48" fill="#f6c514"/>
+  <path d="M52 58 Q76 34 100 58 V86 Q94 108 76 112 Q58 108 52 86Z" fill="#08080a"/>
+  <circle cx="64" cy="72" r="8" fill="#f6c514"/>
+  <circle cx="88" cy="72" r="8" fill="#f6c514"/>
+  <path d="M67 94 H85 M72 86 V102 M80 86 V102" stroke="#f6c514" stroke-width="5"/>
+  <text x="145" y="77" fill="#fff" font-family="Arial Black,Arial" font-size="52">OFFSKULL</text>
+  <text x="148" y="118" fill="#f6c514" font-family="Arial, sans-serif" font-size="27" letter-spacing="9">COMICS</text>
+</svg>
