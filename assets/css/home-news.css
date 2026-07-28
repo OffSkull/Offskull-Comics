@@ -13,10 +13,9 @@
 
 .hero-news {
   position: absolute;
-  z-index: 5;
-
   top: 50%;
-  right: 42px;
+  right: 12px;
+  left: auto;
 
   width: 390px;
   max-height: calc(100% - 70px);
